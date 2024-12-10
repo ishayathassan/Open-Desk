@@ -52,7 +52,8 @@
         </div>
       </div>
       <div id="nav-right">
-        <!-- <ul>
+        <ul>
+          {% if 'user_id' in session %}
           <li class="nav-links">
             <img
               src=" {{ url_for('static', filename='images/edit.png') }} "
@@ -78,15 +79,19 @@
               src="{{ url_for('static', filename='images/user.png') }}"
               alt="Profile"
             />
+            <span>Welcome, {{ session['username'] }}</span>
           </li>
-        </ul> -->
-        <ul>
+          <li id="logout" class="nav-btns">
+            <a href="{{ url_for('logout') }}">Logout</a>
+          </li>
+          {% else %}
           <li id="sign-in" class="nav-btns">
             <a href="{{ url_for('login') }}">Sign In</a>
           </li>
           <li class="nav-btns">
             <a href="{{ url_for('signup') }}">Sign Up</a>
           </li>
+          {% endif %}
         </ul>
       </div>
     </nav>

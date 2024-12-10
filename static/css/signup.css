@@ -47,6 +47,7 @@
 }
 
 .signup-form input {
+  width: 500px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -128,6 +129,7 @@
 }
 #login-card input {
   margin-top: 5px;
+  width: 605px;
 }
 #login-card button {
   margin-top: 15px;
