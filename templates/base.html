@@ -40,7 +40,7 @@
     <nav>
       <div id="nav-left">
         <div id="brand-logo">
-          <a href=""
+          <a href="{{ url_for('home') }}"
             ><img
               src="{{ url_for('static', filename='images/Icon.png') }}"
               alt=""
@@ -52,12 +52,13 @@
         </div>
       </div>
       <div id="nav-right">
-        <ul>
+        <!-- <ul>
           <li class="nav-links">
             <img
               src=" {{ url_for('static', filename='images/edit.png') }} "
               alt="Create"
             />
+
             <span>Create</span>
           </li>
           <li class="nav-links">
@@ -78,15 +79,15 @@
               alt="Profile"
             />
           </li>
-        </ul>
-        <!-- <ul>
+        </ul> -->
+        <ul>
           <li id="sign-in" class="nav-btns">
-            <a href="">Sign In</a>
+            <a href="{{ url_for('login') }}">Sign In</a>
           </li>
           <li class="nav-btns">
-            <a href="">Sign Up</a>
+            <a href="{{ url_for('signup') }}">Sign Up</a>
           </li>
-        </ul> -->
+        </ul>
       </div>
     </nav>
 
