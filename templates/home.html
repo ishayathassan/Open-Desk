@@ -43,10 +43,37 @@ custom_css %}
     </ul>
   </div>
   <div id="feed-contents">
-    <div id="create-post" class="card">
-      <img src="{{ url_for('static', filename='images/user.png') }}" alt="" />
-      <textarea placeholder="Write something..." name="" id=""></textarea>
-      <button>Post</button>
+    <div id="create-post">
+      <div class="post-header">
+        <img
+          src="{{ url_for('static', filename='images/user.png') }}"
+          alt="User Image"
+        />
+        <input
+          type="text"
+          placeholder="Enter title..."
+          id="post-title"
+          name="title"
+          required
+        />
+      </div>
+      <textarea
+        placeholder="Write something..."
+        id="post-content"
+        name="content"
+        required
+      ></textarea>
+      <div class="post-footer">
+        <select id="post-category" name="category" required>
+          <option value="" disabled selected>Select category</option>
+          <option value="technology">Technology</option>
+          <option value="education">Education</option>
+          <option value="health">Health</option>
+          <option value="lifestyle">Lifestyle</option>
+          <option value="others">Others</option>
+        </select>
+        <button type="submit">Post</button>
+      </div>
     </div>
 
     <div class="posts card">
