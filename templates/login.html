@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% block title %} Open Desk{% endblock %} {% block
+custom_css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/signup.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/home.css') }}"
+/>
+{% endblock %} {% block content %}
+
+<div id="login-card">
+  <h1>Log into your Open Desk Community!</h1>
+  <form class="signup-form">
+    <input type="email" id="email" placeholder="Enter your email" required />
+    <input type="password" id="password" placeholder="Enter password" />
+    <button type="submit">Login</button>
+  </form>
+
+  <p class="agreement">
+    By creating an account, you agree to our
+    <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.
+  </p>
+
+  <p class="signin">Already a member? <a href="#">Sign in</a></p>
+</div>
+{% endblock %}

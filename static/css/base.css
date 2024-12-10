@@ -1,0 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  color: #000;
+}
+nav {
+  width: 100vw;
+  height: 63px;
+  background-color: #ffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+body {
+  background-color: #f9f9fb;
+  overflow-x: hidden; /* Disable horizontal scrolling */
+}
+#nav-left {
+  margin-left: 100px;
+  display: flex;
+  align-items: center;
+}
+#brand-logo img {
+  width: 35px;
+  height: 35px;
+  margin-top: 5px;
+}
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+  height: 38px;
+  background-color: #eff0f4;
+  border-radius: 20px;
+  padding: 0 10px;
+  margin-left: 15px;
+}
+
+.search-container i {
+  font-size: 15px;
+  color: #000;
+  opacity: 0.35;
+}
+
+.search-input {
+  flex-grow: 1;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 500;
+  font-style: normal;
+  color: #000;
+  opacity: 0.35;
+  outline: none;
+  padding-left: 10px;
+}
+
+#nav-right {
+  margin-right: 100px; /* Adds margin to the right */
+}
+
+#nav-right ul {
+  display: flex; /* Aligns the nav links horizontally */
+  gap: 38px; /* Adds space between each nav link */
+  list-style: none; /* Removes default bullet points */
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links {
+  display: flex; /* Aligns image and text horizontally */
+  align-items: center; /* Vertically centers content */
+  cursor: pointer; /* Adds a pointer cursor for interactivity */
+  padding: 5px 10px; /* Adds padding for hover background effect */
+  border-radius: 15px; /* Rounds corners for hover effect */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+.nav-links img {
+  width: 25px;
+  height: 25px;
+  opacity: 0.35; /* Default opacity for images */
+  transition: opacity 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.nav-links span {
+  margin-left: 8px; /* Adds space between the icon and text */
+  font-size: 14px;
+  font-weight: 500; /* Slightly bold text */
+  font-style: normal;
+  opacity: 0.5;
+  transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.nav-links:first-child img {
+  opacity: 0.5; /* Higher opacity for the Create icon */
+  width: 30px;
+  height: 30px;
+}
+.nav-links:hover {
+  background-color: #ffdec0;
+}
+.nav-links:hover img {
+  opacity: 0.8;
+}
+.nav-links:hover span {
+  opacity: 0.8;
+}
+.nav-btns {
+  display: flex;
+  justify-content: center;
+  width: 100px;
+  height: 40px;
+  background-color: #ff851b;
+  border-radius: 8px;
+  text-align: center;
+  align-items: center;
+  margin-right: 25px;
+}
+.nav-btns a {
+  color: #fff;
+  font-weight: 500;
+  font-size: 13px;
+}
+#sign-in {
+  background-color: #fff;
+}
+#sign-in a {
+  color: #000;
+}
+#sign-in:hover {
+  background-color: #ebeaea;
+}
