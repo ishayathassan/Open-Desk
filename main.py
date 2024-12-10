@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, redirect, flash, url_for, session
 from werkzeug.security import check_password_hash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from datetime import datetime,timezone
 import re
 
 app = Flask(__name__)
+
 
 # MySQL database configuration
 app.secret_key = 'QwertY12345'  # Required for flashing messages
@@ -13,6 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # db initialization
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -30,6 +33,7 @@ class Post(db.Model):
     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
     category = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -41,9 +45,36 @@ class Post(db.Model):
     def __repr__(self):
         return f'<Post {self.title}>'
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template("home.html")
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        category = request.form['category']
+        created_at = datetime.now(timezone.utc)
+        user_id = session['user_id']
+
+        # Create a new post instance and save to the database
+        new_post = Post(
+            title=title,
+            content=content,
+            category=category,
+            created_at=created_at,
+            user_id=user_id,
+            like_count=0,
+            comment_count=0,
+            view_count=0
+        )
+        db.session.add(new_post)
+        db.session.commit()
+
+        flash('Post created successfully!', 'success')
+        return redirect(url_for('home'))  # Redirect to reload the page
+
+    # Retrieve posts from the database
+    posts = Post.query.all()  # Querying all posts
+    return render_template('home.html', posts=posts)
+
 
 @app.route('/signup',methods=['GET','POST'])
 def signup():
@@ -127,6 +158,10 @@ def logout():
     flash('You have been logged out successfully.', 'success')
     return redirect(url_for('login'))
 
+
+with app.app_context():
+    db.create_all()
+    print("Tables created!")
     
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=5555,debug=True)
