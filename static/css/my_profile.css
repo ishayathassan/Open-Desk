@@ -1,0 +1,501 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-family: "Poppins", sans-serif;
+    color: #000;
+  }
+  nav {
+    width: 100vw;
+    height: 63px;
+    background-color: #ffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  body {
+    background-color: #f9f9fb;
+    overflow-x: hidden; /* Disable horizontal scrolling */
+  }
+  #nav-left {
+    margin-left: 100px;
+    display: flex;
+    align-items: center;
+  }
+  #brand-logo img {
+    width: 35px;
+    height: 35px;
+    margin-top: 5px;
+  }
+  .search-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 200px;
+    height: 38px;
+    background-color: #eff0f4;
+    border-radius: 20px;
+    padding: 0 10px;
+    margin-left: 15px;
+  }
+  
+  .search-container i {
+    font-size: 15px;
+    color: #000;
+    opacity: 0.35;
+  }
+  
+  .search-input {
+    flex-grow: 1;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    font-style: normal;
+    color: #000;
+    opacity: 0.35;
+    outline: none;
+    padding-left: 10px;
+  }
+  
+  #nav-right {
+    margin-right: 100px; /* Adds margin to the right */
+  }
+  
+  #nav-right ul {
+    display: flex; /* Aligns the nav links horizontally */
+    gap: 38px; /* Adds space between each nav link */
+    list-style: none; /* Removes default bullet points */
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav-links {
+    display: flex; /* Aligns image and text horizontally */
+    align-items: center; /* Vertically centers content */
+    cursor: pointer; /* Adds a pointer cursor for interactivity */
+    padding: 5px 10px; /* Adds padding for hover background effect */
+    border-radius: 15px; /* Rounds corners for hover effect */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+  }
+  
+  .nav-links img {
+    width: 25px;
+    height: 25px;
+    opacity: 0.35; /* Default opacity for images */
+    transition: opacity 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+  .nav-links span {
+    margin-left: 8px; /* Adds space between the icon and text */
+    font-size: 14px;
+    font-weight: 500; /* Slightly bold text */
+    font-style: normal;
+    opacity: 0.5;
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+  .nav-links:first-child img {
+    opacity: 0.5; /* Higher opacity for the Create icon */
+    width: 30px;
+    height: 30px;
+  }
+  .nav-links:hover {
+    background-color: #ffdec0;
+  }
+  .nav-links:hover img {
+    opacity: 0.8;
+  }
+  .nav-links:hover span {
+    opacity: 0.8;
+  }
+
+/* Profile Card */
+#profile_card {
+    background-color: white;
+    height: 489px;
+    width: 815px;
+    margin-left: 100px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    overflow: hidden; /* Ensures content stays within the card's boundaries */
+    position: relative;
+    /* display: inline-block; Allows it to align with the #trending section */
+  }
+  
+  /* Cover Picture Container */
+  #cover {
+    width: 100%; /* Full width of the profile card */
+    height: 294px; /* Adjust the height of the cover picture container */
+    position: relative;
+    overflow: hidden; /* Ensures the image stays within the container */
+  }
+  
+  /* Cover Photo */
+  #cover_photo {
+    width: 100%; /* Make the image span the full width of the container */
+    height: 100%; /* Ensure the image covers the height of the container */
+    object-fit: cover; /* Ensures the image maintains its aspect ratio and covers the container */
+    display: block; /* Removes any inline spacing issues */
+  }
+  
+/* Profile Picture Container */
+#profile_pic {
+    width: 130px; /* Width of the profile picture container */
+    height: 130px; /* Height of the profile picture container */
+    position: absolute; /* Allows manual positioning */
+    top: 215px; /* Adjust to move vertically outside the cover */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust for perfect centering */
+    border-radius: 50%; /* Circular frame */
+    overflow: hidden;
+    border: 2px solid white; /* Border for separation from the cover */
+    background-color: #f3f3f3; /* Optional placeholder background color */
+  }
+  
+  /* Profile Photo */
+  #profile_photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image fits and maintains aspect ratio */
+    display: block;
+  }
+
+  /* Profile Details */
+#profile_details {
+    margin-top: 70px; /* Space below the profile picture */
+  }
+  
+  #profile_details h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+  
+  #profile_details p {
+    color: gray;
+    font-size: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  #profile_follow {
+    font-size: 12px;
+    color: #A0A0A0;
+  }
+  
+  #profile_follow span {
+    color: #A0A0A0;
+  }
+  
+  #profile_follow strong {
+    font-weight: bold;
+    color: black;
+  }
+
+
+  #trending {
+    width: 268px;
+    height: 440px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    position: absolute; /* Fixed to the viewport */
+    top: 112px; /* Align with the top of the profile card */
+    right: 133px; /* Position 100px from the right edge of the screen */
+    z-index: 10; /* Ensures visibility above other elements */
+    padding-left: 21px;
+  }
+  
+  #trending h3 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    
+  }
+  
+  .trending-item {
+    margin-bottom: 10px;
+  }
+  
+  .meta-info {
+    display: flex; /* Makes items align in a row */
+    justify-content: space-between; /* Distributes space evenly */
+    font-size: 10px;
+    color: #888888;
+    margin-bottom: 10px;
+  }
+  
+  .meta-info .category {
+    margin-right: -5px;
+    margin-top: 15px;
+    color: #A0A0A0;
+  }
+  
+  .meta-info .date {
+    margin: 0 20px; 
+    margin-top: 15px;
+    color: #A0A0A0;
+  }
+  
+  .meta-info .views {
+    display: flex;
+    align-items: center;
+    color: #A0A0A0;
+    margin-top: 15px;
+    margin-right: 10px;
+  }
+  
+  .meta-info .views i {
+    margin-right: 5px;
+  }
+  .meta-info .views img {
+    padding-right: 5px;
+  }
+  
+  .title {
+    font-size: 12px;
+    font-weight: medium;
+    color: #000;
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+  
+  hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 10px 10px 10px 0px;
+  }
+
+  /* Tab Navigation Styles */
+#tab-navigation {
+    background-color: #f9f9f9; /* Light gray background */
+    padding: 15px 20px; /* Spacing around the navigation */
+    margin-left: 88px;
+    margin-top: 20px;
+    padding-bottom: 25px;
+  }
+  
+  #tab-navigation ul {
+    list-style-type: none; /* Remove default bullet points */
+    padding: 0;
+    margin: 0;
+    display: flex; /* Align items horizontally */
+    gap: 40px; /* Add spacing between tabs */
+  }
+  
+  #tab-navigation li {
+    
+    font-size: 15px;
+    font-weight: bold;
+    color: #888888; /* Gray color for inactive tabs */
+    cursor: pointer;
+    position: relative; /* For hover underline */
+    transition: color 0.3s ease; /* Smooth color transition */
+  }
+  
+  #tab-navigation li:hover {
+    color: #000000; /* Change text color on hover */
+  }
+  
+  #tab-navigation li::after {
+    content: ""; /* Underline effect */
+    position: absolute;
+    left: 0;
+    bottom: 0; /* Position underline below the text */
+    width: 0; /* Start width at 0 */
+    height: 2px; /* Height of the underline */
+    background-color: #FF851B; /* Orange underline */
+    transition: width 0.3s ease; /* Animate width on hover */
+  }
+  
+  #tab-navigation li:hover::after {
+    width: 100%; /* Grow width to full size on hover */
+  }
+  
+
+  .channels-card {
+    width: 229px;
+    height: 440px;
+    margin-left: 100px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    position: relative; /* Makes it a reference for positioning */
+  }
+  
+
+  .channels-card h3 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    padding-top: 10px;
+  }
+
+  .channel-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .channel-item:last-child {
+    border-bottom: none;
+  }
+
+  .channel-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .channel-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #888;
+    margin-right: 10px;
+  }
+
+  .channel-name {
+    font-size: 12px;
+    font-weight: medium;
+    color: #000;
+  }
+
+  .channel-followers {
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    align-items: center;
+  }
+
+  .channel-followers img {
+    width: 14px;
+    height: 14px;
+    margin-right: 5px;
+  }
+
+  .posts_card {
+    width: 910px;
+    height: auto; /* Adjusts height based on content */
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Spacing between header, content, and footer */
+  
+    /* Positioning to the right of .channels-card */
+    position: absolute;
+    top: 0; /* Align the top edges */
+    left: calc(100% + 20px); /* Place it to the right with a gap of 20px */
+  }
+  
+  
+  
+  .card-header {
+    display: flex;
+    gap: 10px; /* Space between image and text */
+    align-items: flex-start;
+  }
+  
+  .card-header img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Space between rows */
+  }
+  
+  .first-row,
+  .second-row {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between text elements and bullets */
+  }
+  
+  .bullet {
+    color: #8a8a8a; /* Matches text opacity */
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .post-category {
+    font-size: 14px;
+    font-weight: 600; /* Semi-bold for category */
+    color: #4a4a4a;
+  }
+  
+  .post-time,
+  .post-channel,
+  .post-user {
+    font-size: 12px;
+    font-weight: 400;
+    color: #8a8a8a; /* Light gray */
+  }
+  
+  .card-content h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 10px;
+  }
+  
+  .card-content p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #4a4a4a;
+    line-height: 1.5;
+  }
+  
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .card-footer .actions {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .card-footer .actions span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a4a4a;
+  }
+  
+  .card-footer .share {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a4a4a;
+    cursor: pointer;
+  }
+  
+  .card-footer .share:hover {
+    color: #ff851b;
+  }
+  
+  

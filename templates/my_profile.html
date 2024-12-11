@@ -1,0 +1,161 @@
+{% extends 'base.html' %} {% block title %} Open Desk{% endblock %} {% block
+    custom_css %}
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/home.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/my_profile.css') }}"
+    />
+    {% endblock %} {% block content %}
+      <div id="profile_card">
+        <div id="cover">
+          <img src="./images/background.png" alt="Cover Photo" id="cover_photo">
+        </div>
+        <div id="profile_pic">
+            <img src="./images/profile_pic.jpg" alt="Profile Photo" id="profile_photo">
+          </div>
+          <div id="profile_details">
+            <h2>Anon</h2>
+            <p>@anondrip &nbsp;&bull;&nbsp; Joined December 2024</p>
+            <div id="profile_follow">
+              <span style="margin-left: 35px;"><strong>118</strong> followers</span>
+              <span style="margin-left: 15px;"><strong>112</strong> following</span>
+            </div>
+          </div>
+      </div>
+
+      <div id="trending">
+        <h3>Trending</h3>
+        <div class="trending-item">
+          <div class="meta-info">
+            <span class="category">Personal Finance</span>
+            <span class="date">Yesterday</span>
+            <span class="views"><img src="./images/eye 1.png" class="icon-eye"></i> 82232</span>
+          </div>
+          <p class="title">NW at 6.8M, what next?</p>
+        </div>
+        <hr />
+        <div class="trending-item">
+          <div class="meta-info">
+            <span class="category">Personal Finance</span>
+            <span class="date">Yesterday</span>
+            <span class="views"><img src="./images/eye 1.png" class="icon-eye"></i> 82232</span>
+          </div>
+          <p class="title">NW at 6.8M, what next?</p>
+        </div>
+        <hr />
+        <div class="trending-item">
+          <div class="meta-info">
+            <span class="category">Personal Finance</span>
+            <span class="date">Yesterday</span>
+            <span class="views"><img src="./images/eye 1.png" class="icon-eye"></i> 82232</span>
+          </div>
+          <p class="title">NW at 6.8M, what next?</p>
+        </div>
+        <hr />
+        <div class="trending-item">
+          <div class="meta-info">
+            <span class="category">Personal Finance</span>
+            <span class="date">Yesterday</span>
+            <span class="views"><img src="./images/eye 1.png" class="icon-eye"></i> 82232</span>
+          </div>
+          <p class="title">NW at 6.8M, what next?</p>
+        </div>
+      </div>
+
+      <div id="tab-navigation">
+        <ul>
+          <li>Timeline</li>
+          <li>Profile</li>
+          <li>Channels</li>
+          <li>Connections</li>
+          <li>Documents</li>
+          <li>Photos</li>
+        </ul>
+      </div>
+      
+      <div class="channels-card">
+        <h3>Channels <span style="color: #888; font-weight: bold;">9</span></h3>
+    
+        <div class="channel-item">
+          <div class="channel-left">
+            <div class="channel-icon">A</div>
+            <div class="channel-name">r/Destiny the game</div>
+          </div>
+          <div class="channel-followers">
+            <img src="./images/user-account.png" alt="Followers">
+            82232
+          </div>
+        </div>
+    
+        <div class="channel-item">
+          <div class="channel-left">
+            <div class="channel-icon">A</div>
+            <div class="channel-name">r/Destiny the game</div>
+          </div>
+          <div class="channel-followers">
+            <img src="./images/user-account.png" alt="Followers">
+            82232
+          </div>
+        </div>
+    
+        <div class="channel-item">
+          <div class="channel-left">
+            <div class="channel-icon">A</div>
+            <div class="channel-name">r/Destiny the game</div>
+          </div>
+          <div class="channel-followers">
+            <img src="./images/user-account.png" alt="Followers">
+            82232
+          </div>
+        </div>
+    
+        <div class="channel-item">
+          <div class="channel-left">
+            <div class="channel-icon">A</div>
+            <div class="channel-name">r/Destiny the game</div>
+          </div>
+          <div class="channel-followers">
+            <img src="./images/user-account.png" alt="Followers">
+            82232
+          </div>
+        </div>
+      </div>
+
+      <div class="posts_card">
+        <div class="card-header">
+          <img src="./images/user.png" alt="User" />
+          <div class="header-info">
+            <div class="first-row">
+              <span class="post-category">Tech Industry</span>
+              <span class="bullet">•</span>
+              <span class="post-time">Yesterday</span>
+            </div>
+            <div class="second-row">
+              <span class="post-channel">UIU</span>
+              <span class="bullet">•</span>
+              <span class="post-user">Ishayat</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <h4>Offer letter not being honored</h4>
+          <p>
+            If an external company doesn’t honor its offer letter and nor
+            formally rescind it ... are there any legal options that can
+            compel them to compensate the loss of pay (left earlier job) and
+            mental stress?
+          </p>
+        </div>
+        <div class="card-footer">
+          <div class="actions">
+            <span><i class="fa fa-heart"></i> 180</span>
+            <span><i class="fa fa-comment"></i> 180</span>
+            <span><i class="fa fa-eye"></i> 180</span>
+          </div>
+          <div class="share"><i class="fa fa-share-alt"></i> Share</div>
+        </div>
+      </div>
+      {% endblock %}
