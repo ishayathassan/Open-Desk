@@ -75,6 +75,9 @@ def home():
     posts = Post.query.all()  # Querying all posts
     return render_template('home.html', posts=posts)
 
+@app.route('/profile')
+def profile():
+    return render_template('my_profile.html')
 
 @app.route('/signup',methods=['GET','POST'])
 def signup():
@@ -159,9 +162,9 @@ def logout():
     return redirect(url_for('login'))
 
 
-with app.app_context():
-    db.create_all()
-    print("Tables created!")
+# with app.app_context():
+#     db.create_all()
+#     print("Tables created!")
     
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=5555,debug=True)
