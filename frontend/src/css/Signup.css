@@ -1,0 +1,178 @@
+#main {
+  display: flex;
+  justify-content: space-between;
+}
+#right {
+  width: 70vw;
+  height: 85vh;
+}
+.right {
+  margin-right: 200px;
+  margin-top: 40px;
+}
+.right-new {
+  margin-right: 18%;
+  margin-top: 6%;
+}
+.right h2 {
+  color: #ff851b;
+  font-size: 24px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+.right p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.right .security-highlight {
+  color: #ff851b;
+  font-weight: bold;
+}
+
+.right .subtext {
+  margin-bottom: 20px;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.signup-form div {
+  margin-top: 2px;
+}
+
+.signup-form label {
+  font-size: 14px;
+  color: #666;
+  text-align: left;
+}
+
+.signup-form input {
+  width: 495px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.signup-form select,
+option {
+  width: 518px;
+  padding: 10px;
+  color: #666;
+
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.signup-form input:focus {
+  outline: none;
+  border-color: #ff851b;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.signup-form button {
+  width: 520px;
+  padding: 10px;
+  background-color: #ff851b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+#anonymous_div {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Adjust the gap between the radio input and label */
+  margin-left: 2px; /* Align it with the rest of the form */
+}
+
+#anonymous_div input[type="radio"] {
+  margin: 0; /* Remove default margin */
+  width: 10px;
+}
+
+#anonymous_div label {
+  margin: 0; /* Remove default margin */
+  font-size: 14px;
+  color: #666;
+}
+.signup-form button:hover {
+  background-color: #ff851bc2;
+}
+
+.agreement {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.agreement a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.agreement a:hover {
+  text-decoration: underline;
+}
+
+.signin {
+  font-size: 14px;
+  color: #555;
+}
+
+.signin a {
+  color: #d9534f;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.signin a:hover {
+  text-decoration: underline;
+}
+#left {
+  width: 30%;
+  margin-top: 5%;
+  margin-left: 90px;
+}
+#left h1 {
+  margin-bottom: 40px;
+  color: #ff851b;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 40px;
+}
+#left p {
+  margin-top: 20px;
+}
+#login-card {
+  width: 630px;
+  margin: auto;
+  margin-top: 130px;
+}
+#login-card h1 {
+  margin-bottom: 30px;
+}
+#login-card input {
+  margin-top: 5px;
+  width: 605px;
+}
+#login-card button {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  width: 630px;
+}
