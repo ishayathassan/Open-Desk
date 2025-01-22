@@ -1,4 +1,4 @@
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -34,10 +34,10 @@ const Navbar = () => {
             <button>Logout</button>
           </li> */}
           <li id="sign-in" className="nav-btns">
-            <a href="/login">Sign In</a>
+            <Link to="/login">Sign In</Link>
           </li>
           <li className="nav-btns">
-            <a href="/signup">Sign Up</a>
+            <Link to="/signup">Sign Up</Link>
           </li>
         </ul>
       </div>

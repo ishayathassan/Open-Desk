@@ -1,5 +1,6 @@
 import "./css/Signup.css";
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { fetchUniversities, fetchPrograms } from "./fetchSignupFormData";
 
 const Signup = () => {
@@ -21,7 +22,35 @@ const Signup = () => {
     usernameError: "",
     emailError: "",
   });
+  const [passwordStrengthMessage, setPasswordStrengthMessage] = useState("");
+  const [isPasswordStrong, setIsPasswordStrong] = useState(false);
 
+  // Function to validate password strength
+  const validatePasswordStrength = (password) => {
+    const lengthCheck = password.length >= 8;
+    const numberCheck = /[0-9]/.test(password);
+    const letterCheck = /[a-zA-Z]/.test(password);
+    const specialCharCheck = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    // Check if password meets strength requirements
+    if (lengthCheck && numberCheck && letterCheck && specialCharCheck) {
+      setIsPasswordStrong(true);
+      setPasswordStrengthMessage("Password is strong!");
+    } else if (password.length < 8) {
+      setIsPasswordStrong(false);
+      setPasswordStrengthMessage(
+        "Password must be at least 8 characters long."
+      );
+    } else if (!numberCheck || !letterCheck || !specialCharCheck) {
+      setIsPasswordStrong(false);
+      setPasswordStrengthMessage(
+        "Password must include letters, numbers, and special characters."
+      );
+    } else {
+      setIsPasswordStrong(false);
+      setPasswordStrengthMessage("");
+    }
+  };
   useEffect(() => {
     const loadUniversities = async () => {
       const data = await fetchUniversities();
@@ -47,6 +76,10 @@ const Signup = () => {
     if (name === "username" || name === "email") {
       setErrors({ ...errors, usernameError: "", emailError: "" }); // Reset username/email errors
     }
+    // Check password strength as user types
+    if (name === "password1") {
+      validatePasswordStrength(value);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -55,6 +88,10 @@ const Signup = () => {
     if (formData.password1 !== formData.password2) {
       setErrors({ ...errors, passwordMismatch: true });
       setFormData({ ...formData, password1: "", password2: "" });
+      return;
+    }
+    if (!isPasswordStrong) {
+      setPasswordStrengthMessage("Password must meet the strength criteria.");
       return;
     }
 
@@ -174,6 +211,21 @@ const Signup = () => {
               onChange={handleChange}
               required
             />
+            {passwordStrengthMessage && (
+              <p
+                style={{
+                  fontSize: "12px",
+                  marginBottom: "0px",
+                  marginLeft: "2px",
+                  width: "500px",
+                }}
+                className={`password-strength-message ${
+                  isPasswordStrong ? "strong" : "weak"
+                }`}
+              >
+                {passwordStrengthMessage}
+              </p>
+            )}
           </div>
           <div>
             <input
@@ -256,7 +308,7 @@ const Signup = () => {
         </p>
 
         <p className="signin">
-          Already a member? <a href="#">Sign in</a>
+          Already a member? <Link to="/login">Sign in</Link>
         </p>
       </div>
     </div>
