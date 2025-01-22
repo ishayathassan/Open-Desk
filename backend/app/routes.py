@@ -21,7 +21,10 @@ def signup():
         # Check for existing user
         existing_user = User.query.filter((User.email == email) | (User.username == username)).first()
         if existing_user:
-            return jsonify({"error": "Email or username already registered"}), 400
+            if existing_user.email == email:
+                return jsonify({"error": "Email is already registered"}), 400
+            if existing_user.username == username:
+                return jsonify({"error": "Username is already taken"}), 400
 
         # Create and save new user
         new_user = User(

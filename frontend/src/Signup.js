@@ -16,7 +16,11 @@ const Signup = () => {
     year_of_study: "",
     is_anonymous: false,
   });
-  const [passwordError, setPasswordError] = useState(false); // For password mismatch
+  const [errors, setErrors] = useState({
+    passwordMismatch: false,
+    usernameError: "",
+    emailError: "",
+  });
 
   useEffect(() => {
     const loadUniversities = async () => {
@@ -35,20 +39,22 @@ const Signup = () => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" || type === "radio" ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
+    if (name === "password1" || name === "password2") {
+      setErrors({ ...errors, passwordMismatch: false }); // Reset password error
+    }
+    if (name === "username" || name === "email") {
+      setErrors({ ...errors, usernameError: "", emailError: "" }); // Reset username/email errors
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.password1 !== formData.password2) {
-      setPasswordError(true); // Set the error flag
-      setFormData({
-        ...formData,
-        password1: "",
-        password2: "",
-      }); // Clear both password fields
+      setErrors({ ...errors, passwordMismatch: true });
+      setFormData({ ...formData, password1: "", password2: "" });
       return;
     }
 
@@ -74,10 +80,18 @@ const Signup = () => {
         body: JSON.stringify(user),
       });
 
+      const result = await response.json();
+
       if (response.ok) {
         alert("Signup successful!");
       } else {
-        alert("Signup failed! Please try again.");
+        if (result.error === "Username is already taken") {
+          setErrors({ ...errors, usernameError: result.error });
+        } else if (result.error === "Email is already registered") {
+          setErrors({ ...errors, emailError: result.error });
+        } else {
+          alert("Signup failed! Please try again.");
+        }
       }
     } catch (error) {
       console.error("Error during signup:", error);
@@ -112,7 +126,7 @@ const Signup = () => {
               type="text"
               id="name"
               name="full_name"
-              placeholder="full name"
+              placeholder="Full name"
               value={formData.full_name}
               onChange={handleChange}
               required
@@ -121,24 +135,34 @@ const Signup = () => {
           <div>
             <input
               type="email"
-              id="email"
               name="email"
-              placeholder="institute email"
+              placeholder="Institutional email"
               value={formData.email}
               onChange={handleChange}
+              style={{
+                borderColor: errors.emailError ? "red" : "",
+              }}
               required
             />
+            {errors.emailError && (
+              <p style={{ color: "red" }}>{errors.emailError}</p>
+            )}
           </div>
           <div>
             <input
               type="text"
-              id="username"
               name="username"
               placeholder="Username"
               value={formData.username}
               onChange={handleChange}
+              style={{
+                borderColor: errors.usernameError ? "red" : "",
+              }}
               required
             />
+            {errors.usernameError && (
+              <p style={{ color: "red" }}>{errors.usernameError}</p>
+            )}
           </div>
           <div>
             <input
@@ -160,11 +184,11 @@ const Signup = () => {
               value={formData.password2}
               onChange={handleChange}
               style={{
-                borderColor: passwordError ? "red" : "",
+                borderColor: errors.passwordMismatch ? "red" : "",
               }}
               required
             />
-            {passwordError && (
+            {errors.passwordMismatch && (
               <p style={{ color: "red" }}>
                 Passwords do not match. Please try again.
               </p>
