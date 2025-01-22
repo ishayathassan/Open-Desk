@@ -16,8 +16,7 @@ const Signup = () => {
     year_of_study: "",
     is_anonymous: false,
   });
-
-  const [message, setMessage] = useState("");
+  const [passwordError, setPasswordError] = useState(false); // For password mismatch
 
   useEffect(() => {
     const loadUniversities = async () => {
@@ -43,9 +42,13 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check for password mismatch
     if (formData.password1 !== formData.password2) {
-      setMessage("Passwords do not match!");
+      setPasswordError(true); // Set the error flag
+      setFormData({
+        ...formData,
+        password1: "",
+        password2: "",
+      }); // Clear both password fields
       return;
     }
 
@@ -58,15 +61,12 @@ const Signup = () => {
       program: formData.program,
       year_of_study: formData.year_of_study,
       is_anonymous: formData.is_anonymous,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      has_reviewed: false,
-      bio: "",
-      profile_image: "",
     };
 
     try {
-      const response = await fetch("http://localhost:5000/users", {
+      console.log("Sending data:", user); // Log data before sending
+
+      const response = await fetch("http://127.0.0.1:5000/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,24 +75,12 @@ const Signup = () => {
       });
 
       if (response.ok) {
-        setMessage("Signup successful!");
-        setFormData({
-          full_name: "",
-          email: "",
-          username: "",
-          password1: "",
-          password2: "",
-          university: "",
-          program: "",
-          year_of_study: "",
-          is_anonymous: false,
-        });
+        alert("Signup successful!");
       } else {
-        setMessage("Signup failed. Please try again.");
+        alert("Signup failed! Please try again.");
       }
     } catch (error) {
-      console.error("Error:", error);
-      setMessage("Error occurred. Please try again.");
+      console.error("Error during signup:", error);
     }
   };
   return (
@@ -171,8 +159,16 @@ const Signup = () => {
               placeholder="Re-type password"
               value={formData.password2}
               onChange={handleChange}
+              style={{
+                borderColor: passwordError ? "red" : "",
+              }}
               required
             />
+            {passwordError && (
+              <p style={{ color: "red" }}>
+                Passwords do not match. Please try again.
+              </p>
+            )}
           </div>
           <div>
             <select
