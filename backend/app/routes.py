@@ -52,25 +52,24 @@ def signup():
 def login():
     data = request.get_json()
 
-    email_or_username = data.get('email_or_username')
+    email = data.get('email')
     password = data.get('password')
 
     # Basic validation
-    if not email_or_username or not password:
-        return jsonify({"error": "Email/Username and Password are required"}), 400
+    if not email or not password:
+        return jsonify({"error": "Email and Password are required"}), 400
 
-    # Find user by email or username
-    user = User.query.filter(
-        (User.email == email_or_username) | (User.username == email_or_username)
-    ).first()
+    # Find user by email
+    user = User.query.filter_by(email=email).first()
 
     if not user:
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": "Invalid email"}), 401  # Specific error for invalid email
 
     # Verify the password
     if user.password != password:
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": "Incorrect password"}), 401  # Specific error for incorrect password
 
+    # Successful login
     return jsonify({
         "message": "Login successful!",
         "user_id": user.user_id,

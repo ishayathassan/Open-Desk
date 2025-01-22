@@ -176,3 +176,15 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-bottom: 10px;
   width: 630px;
 }
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.success-message {
+  color: green;
+  font-size: 1rem;
+  margin-top: 10px;
+  font-weight: bold;
+}

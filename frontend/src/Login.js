@@ -3,44 +3,64 @@ import "./css/Signup.css";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
-  const [message, setMessage] = useState("");
-
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+  const [successMessage, setSuccessMessage] = useState("");
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
+    setErrors({
+      ...errors,
+      [name]: "", // Clear specific error when the user types
+    });
+    setSuccessMessage(""); // Clear success message when typing
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/users?username=${formData.username}`
-      );
+      const response = await fetch("http://127.0.0.1:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
       const data = await response.json();
 
-      if (data.length === 0) {
-        setMessage("User not found!");
-        return;
-      }
-
-      const user = data[0];
-
-      if (user.password === formData.password) {
-        setMessage("Login successful!");
-        // Handle successful login (e.g., redirect, save user info to context/state)
+      if (response.ok) {
+        // Successful login
+        setSuccessMessage(data.message);
+        setErrors({ email: "", password: "" }); // Clear errors
       } else {
-        setMessage("Incorrect password!");
+        // Handle error responses
+        if (data.error === "Invalid email") {
+          setErrors({ email: "Invalid email", password: "" });
+        } else if (data.error === "Incorrect password") {
+          setErrors({ email: "", password: "Incorrect password" });
+        } else if (data.error === "Email and Password are required") {
+          setErrors({
+            email: "Email is required",
+            password: "Password is required",
+          });
+        } else {
+          setErrors({ email: "", password: "" });
+          setSuccessMessage("Something went wrong. Please try again.");
+        }
       }
     } catch (error) {
       console.error("Error during login:", error);
-      setMessage("Something went wrong. Please try again later.");
+      setSuccessMessage("Something went wrong. Please try again later.");
     }
   };
 
@@ -50,14 +70,15 @@ const Login = () => {
       <form className="signup-form login-form" onSubmit={handleSubmit}>
         <div>
           <input
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Enter your username"
-            value={formData.username}
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            value={formData.email}
             onChange={handleChange}
             required
           />
+          {errors.email && <p className="error-message">{errors.email}</p>}
         </div>
         <div>
           <input
@@ -69,12 +90,15 @@ const Login = () => {
             onChange={handleChange}
             required
           />
+          {errors.password && (
+            <p className="error-message">{errors.password}</p>
+          )}
         </div>
         <button id="login_button" type="submit">
           Login
         </button>
       </form>
-      {message && <p>{message}</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>}
     </div>
   );
 };
