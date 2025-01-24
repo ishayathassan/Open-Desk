@@ -44,8 +44,8 @@ class HighlightedPosts(db.Model):
     channel_id = db.Column(db.Integer, db.ForeignKey('channels.channel_id'), primary_key=True, nullable=False)
 
     # Relationships
-    post = db.relationship('Posts', backref='highlighted_in_channels', lazy=True)
-    channel = db.relationship('Channels', backref='highlighted_posts', lazy=True)
+    post = db.relationship('Post', backref='highlighted_in_channels', lazy=True)
+    channel = db.relationship('Channel', backref='highlighted_posts', lazy=True)
 
     def __repr__(self):
         return f"<HighlightedPosts post_id={self.post_id} channel_id={self.channel_id}>"

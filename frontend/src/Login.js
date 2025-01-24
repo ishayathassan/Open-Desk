@@ -40,10 +40,15 @@ const Login = () => {
 
       if (response.ok) {
         // Successful login
+        localStorage.setItem("user_id", data.user_id); // Save user_id
+        localStorage.setItem("username", data.username); // Save username
+        localStorage.setItem("email", data.email); // Save email
         setSuccessMessage(data.message);
-        setErrors({ email: "", password: "" }); // Clear errors
+
+        // Redirect to Home
+        window.location.href = "/";
       } else {
-        // Handle error responses
+        // Handle errors
         if (data.error === "Invalid email") {
           setErrors({ email: "Invalid email", password: "" });
         } else if (data.error === "Incorrect password") {

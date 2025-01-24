@@ -1,0 +1,272 @@
+.main {
+  display: flex; /* Aligns child elements horizontally */
+  /* justify-content: space-between; */
+  align-items: flex-start; /* Aligns items to the top */
+  margin: 20px; /* Adds some space around the main container */
+}
+
+#sidebar {
+  margin-left: 75px;
+  width: 221px;
+  position: sticky; /* Keeps the sidebar in place */
+  top: 0; /* Sticks to the top when scrolling */
+  height: calc(100vh - 20px); /* Ensures it occupies the full viewport height */
+}
+#sidebar ul {
+  list-style: none; /* Removes default bullet points */
+  margin: 0;
+  padding: 0;
+}
+.sidebar-links {
+  display: flex; /* Aligns image and text horizontally */
+  align-items: center; /* Vertically centers content */
+  cursor: pointer; /* Adds a pointer cursor for interactivity */
+  padding: 5px 10px; /* Adds padding for hover background effect */
+  border-radius: 15px; /* Rounds corners for hover effect */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+  height: 41px;
+}
+.sidebar-links img {
+  width: 20px;
+  height: 20px;
+  opacity: 0.6;
+}
+.sidebar-links span {
+  margin-left: 8px; /* Adds space between the icon and text */
+  font-size: 15px;
+  font-weight: 500; /* Slightly bold text */
+  font-style: normal;
+  opacity: 0.8;
+  transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+.sidebar-links:hover {
+  background-color: #eff0f4;
+}
+
+#feed-contents {
+  padding: 20px;
+  margin-top: 0px;
+  overflow-y: auto;
+  /* max-height: calc(
+    100vh - 40px
+  ); */
+}
+.card {
+  width: 900px;
+  height: 80px;
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 25px;
+  display: flex;
+  margin-bottom: 40px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+#create-post {
+  width: 908px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column; /* Stack all elements vertically */
+  gap: 20px; /* Add space between rows */
+}
+
+.post-header {
+  display: flex; /* Align image and title in a row */
+  align-items: center;
+  gap: 15px; /* Space between the image and input */
+}
+
+.post-header img {
+  width: 29px; /* Set a fixed size for the image */
+  height: 29px;
+  border-radius: 50%; /* Make the image round */
+}
+
+#post-title {
+  height: 30px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 13px;
+  padding-left: 8px;
+  font-weight: 500;
+  width: 500px;
+}
+
+#post-content {
+  width: 90%;
+  height: 100px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  resize: none;
+  font-size: 14px;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between; /* Space out the category select and post button */
+  align-items: center;
+}
+
+#post-category {
+  width: 160px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 15px;
+  background-color: #ff851b;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #e67e22;
+}
+
+.posts.card {
+  margin-top: 25px;
+  width: 910px;
+  height: auto; /* Adjusts height based on content */
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Spacing between header, content, and footer */
+}
+
+.card-header {
+  display: flex;
+  gap: 10px; /* Space between image and text */
+  align-items: flex-start;
+}
+
+.card-header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Space between rows */
+}
+
+.first-row,
+.second-row {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between text elements and bullets */
+}
+
+.bullet {
+  color: #8a8a8a; /* Matches text opacity */
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.post-category {
+  font-size: 14px;
+  font-weight: 600; /* Semi-bold for category */
+  color: #4a4a4a;
+}
+
+.post-time,
+.post-channel,
+.post-user {
+  font-size: 12px;
+  font-weight: 400;
+  color: #8a8a8a; /* Light gray */
+}
+
+.card-content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.card-content p {
+  font-size: 14px;
+  font-weight: 400;
+  color: #4a4a4a;
+  line-height: 1.5;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-footer .actions {
+  display: flex;
+  gap: 20px;
+}
+
+.card-footer .actions span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.card-footer .share {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+
+.card-footer .share:hover {
+  color: #ff851b;
+}
+
+/* #feed-contents::-webkit-scrollbar {
+  width: 10px; 
+  height: 8px; 
+}
+
+#feed-contents::-webkit-scrollbar-thumb {
+  background-color: #888; 
+  border-radius: 10px;
+  border: 2px solid #f9f9fb;
+}
+
+#feed-contents::-webkit-scrollbar-track {
+  background-color: #f1f1f1; 
+  border-radius: 10px;
+}
+
+
+#feed-contents::-webkit-scrollbar-thumb:hover {
+  background-color: #555; 
+} */
+#most-read {
+  margin-right: 90px;
+  width: 330px;
+  height: 300px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  top: 0; /* Sticks to the top when scrolling */
+}

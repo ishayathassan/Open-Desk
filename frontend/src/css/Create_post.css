@@ -1,0 +1,54 @@
+.create-post-container {
+  background-color: #f9f9fb;
+  width: 60vw;
+  height: 100vh;
+  border-radius: 8px;
+  padding: 20px;
+}
+.content-section select {
+  /* margin-bottom: 30px; */
+  border-radius: 10px;
+  padding: 2px;
+  padding-left: 5px;
+  width: 200px;
+}
+.create-post-container h2 {
+  margin: 0;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #000000cc;
+}
+.content-section textarea {
+  border: 1px solid #444;
+  border-radius: 10px;
+  width: 50vw;
+  height: 100px;
+  padding: 10px;
+  color: #000;
+  font-size: 1rem;
+  resize: none;
+}
+
+/* Tags Section */
+.tags-section {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+#add-tag-btn {
+  background-color: #0079d3;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+#add-tag-btn:hover {
+  background-color: #005fa3;
+}
+
+#post-btn {
+  margin-top: 10px;
+}
