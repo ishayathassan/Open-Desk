@@ -171,54 +171,56 @@ def home():
         return jsonify({"error": str(e)}), 500
 
 
-# @bp.route('/create_post', methods=['POST'])
-# def create_post():
-#     data = request.get_json()
-#     user_id = data.get('user_id')
-#     content = data.get('content')
-#     channel_id = data.get('channel_id')
+@bp.route('/create_post', methods=['POST'])
+def create_post():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    content = data.get('content')
+    channel_id = data.get('channel_id')
 
-#     # Validate required fields
-#     if not all([user_id, content, channel_id]):
-#         return jsonify({"error": "Missing user_id, content, or channel_id"}), 400
+    # Validate required fields
+    if not all([user_id, content, channel_id]):
+        return jsonify({"error": "Missing user_id, content, or channel_id"}), 400
 
-#     # Check if user exists
-#     user = User.query.get(user_id)
-#     if not user:
-#         return jsonify({"error": "User not found"}), 404
+    # Check if user exists
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
-#     # Check if channel exists
-#     channel = Channel.query.get(channel_id)
-#     if not channel:
-#         return jsonify({"error": "Channel not found"}), 404
+    # Check if channel exists
+    channel = Channel.query.get(channel_id)
+    if not channel:
+        return jsonify({"error": "Channel not found"}), 404
 
-#     # For private channels, ensure the user is a member
-#     if channel.is_private:
-#         membership = FollowedChannel.query.filter_by(
-#             user_id=user_id,
-#             channel_id=channel_id
-#         ).first()
-#         if not membership:
-#             return jsonify({"error": "Not a member of this private channel"}), 403
+    # For private channels, ensure the user is a member
+    if channel.is_private:
+        membership = FollowedChannel.query.filter_by(
+            user_id=user_id,
+            channel_id=channel_id
+        ).first()
+        if not membership:
+            return jsonify({"error": "Not a member of this private channel"}), 403
 
-#     # Create the new post
-#     new_post = Post(
-#         content=content,
-#         user_id=user_id,
-#         channel_id=channel_id,
-#         created_at=datetime.utcnow()
-#     )
+    # Create the new post
+    new_post = Post(
+        content=content,
+        user_id=user_id,
+        channel_id=channel_id,
+        created_at=datetime.utcnow()
+    )
 
-#     # Update the channel's post count
-#     channel.post_count += 1
+    # Update the channel's post count
+    if channel.post_count is None:
+        channel.post_count = 0  # Initialize to 0 if None
+    channel.post_count += 1
 
-#     try:
-#         db.session.add(new_post)
-#         db.session.commit()
-#         return jsonify({
-#             "message": "Post created successfully",
-#             "post_id": new_post.post_id
-#         }), 201
-#     except SQLAlchemyError as e:
-#         db.session.rollback()
-#         return jsonify({"error": str(e)}), 500
+    try:
+        db.session.add(new_post)
+        db.session.commit()
+        return jsonify({
+            "message": "Post created successfully",
+            "post_id": new_post.post_id
+        }), 201
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500

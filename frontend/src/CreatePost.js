@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Add this import
 import "./css/Create_post.css";
 
 const CreatePost = () => {
   const [content, setContent] = useState("");
   const [channels, setChannels] = useState([]); // State to store the list of channels
   const [selectedChannel, setSelectedChannel] = useState("");
+  const navigate = useNavigate(); // Initialize navigate
 
   // Fetch followed channels on component mount
   useEffect(() => {
     const fetchFollowedChannels = async () => {
-      const userId = localStorage.getItem("user_id"); // Get user ID from localStorage
+      const userId = localStorage.getItem("user_id");
       if (!userId) {
         console.error("User ID is not available in localStorage");
         return;
@@ -22,7 +24,7 @@ const CreatePost = () => {
         const data = await response.json();
 
         if (response.ok) {
-          setChannels(data.channels); // Set the fetched channels
+          setChannels(data.channels); // ✅ Only set channels, no redirect
         } else {
           console.error("Failed to fetch channels:", data.message);
         }
@@ -32,7 +34,7 @@ const CreatePost = () => {
     };
 
     fetchFollowedChannels();
-  }, []);
+  }, []); // Remove navigate from here
 
   const handleContentChange = (e) => {
     setContent(e.target.value);
@@ -44,15 +46,40 @@ const CreatePost = () => {
     e.target.style.height = `${e.target.scrollHeight}px`; // Set new height
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(
-      "Post submitted with content:",
-      content,
-      "Channel:",
-      selectedChannel
-    );
-    // Add your post submission logic here
+    const userId = localStorage.getItem("user_id");
+
+    if (!userId) {
+      alert("You must be logged in to post.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/create_post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          content: content,
+          channel_id: selectedChannel,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        navigate("/", { state: { success: "Post created successfully!" } });
+      } else {
+        navigate("/", { state: { error: data.error } });
+      }
+    } catch (error) {
+      navigate("/", {
+        state: { error: "Failed to create post. Please try again." },
+      });
+    }
   };
 
   return (

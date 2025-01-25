@@ -1,13 +1,29 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; // Add this import
 import "./css/home.css"; // Import your custom CSS
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
-  const [formData, setFormData] = useState({
-    title: "",
-    content: "",
-    category: "",
-  });
+  const location = useLocation(); // Get location state
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  // const [formData, setFormData] = useState({
+  //   title: "",
+  //   content: "",
+  //   category: "",
+  // });
+
+  // Read state on component mount
+  useEffect(() => {
+    if (location.state?.success) {
+      setSuccessMessage("Post created successfully!");
+      // Clear state after displaying
+      window.history.replaceState({}, document.title);
+    } else if (location.state?.error) {
+      setErrorMessage(location.state.error);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   // Fetch posts from an API (replace with your API endpoint)
   useEffect(() => {
@@ -25,13 +41,17 @@ const Home = () => {
   }, []);
 
   // Handle input change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
 
   return (
     <div id="feed-contents">
+      {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )}
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
       {posts.map((post) => (
         <div key={post.id} className="posts card">
           <div className="card-header">
