@@ -1,8 +1,38 @@
-import React, { useState } from "react";
-import "./css/Create_post.css"; // Import your custom CSS
+import React, { useState, useEffect } from "react";
+import "./css/Create_post.css";
 
 const CreatePost = () => {
   const [content, setContent] = useState("");
+  const [channels, setChannels] = useState([]); // State to store the list of channels
+  const [selectedChannel, setSelectedChannel] = useState("");
+
+  // Fetch followed channels on component mount
+  useEffect(() => {
+    const fetchFollowedChannels = async () => {
+      const userId = localStorage.getItem("user_id"); // Get user ID from localStorage
+      if (!userId) {
+        console.error("User ID is not available in localStorage");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:5000/followed_channels?user_id=${userId}`
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setChannels(data.channels); // Set the fetched channels
+        } else {
+          console.error("Failed to fetch channels:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching followed channels:", error);
+      }
+    };
+
+    fetchFollowedChannels();
+  }, []);
 
   const handleContentChange = (e) => {
     setContent(e.target.value);
@@ -16,18 +46,13 @@ const CreatePost = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Post submitted with content:", content);
+    console.log(
+      "Post submitted with content:",
+      content,
+      "Channel:",
+      selectedChannel
+    );
     // Add your post submission logic here
-  };
-
-  const handleAddTag = () => {
-    console.log("Add Tag clicked");
-    // Add logic for handling tags here
-  };
-
-  const handleSaveDraft = () => {
-    console.log("Draft saved with content:", content);
-    // Add logic for saving drafts here
   };
 
   return (
@@ -36,23 +61,21 @@ const CreatePost = () => {
       <form id="create-post-form" onSubmit={handleSubmit}>
         <div className="content-section">
           <div style={{ marginBottom: "20px" }}>
-            <select name="select_channel" id="">
-              <option value="default">Select Community</option>
-
-              <option value="CSE">CSE</option>
-              <option value="AI">AI</option>
-              <option value="DS">DS</option>
+            <select
+              name="select_channel"
+              id="select-channel"
+              value={selectedChannel}
+              onChange={(e) => setSelectedChannel(e.target.value)}
+              required
+            >
+              <option value="">Select Community</option>
+              {channels.map((channel) => (
+                <option key={channel.id} value={channel.id}>
+                  {channel.name}
+                </option>
+              ))}
             </select>
           </div>
-          {/* <div style={{ marginTop: "10px", marginBottom: "20px" }}>
-            <select name="select_tags" id="">
-              <option value="default">Select Tag</option>
-
-              <option value="CSE">CSE</option>
-              <option value="AI">AI</option>
-              <option value="DS">DS</option>
-            </select>
-          </div> */}
 
           <textarea
             id="create-post-content"

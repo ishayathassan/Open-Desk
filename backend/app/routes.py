@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify
-from app.models import User,Department,University
+from sqlalchemy.orm import joinedload
+from app.models import User,Department,University, Channel, FollowedChannel, Post
 from app.database import db
+from datetime import datetime
+from sqlalchemy.exc import SQLAlchemyError
 
 bp = Blueprint('routes', __name__)
 
@@ -103,3 +106,119 @@ def logout():
         print("Error during logout:", e)  # Debugging
         return jsonify({"error": "An error occurred. Please try again later."}), 500
 
+
+@bp.route('/followed_channels', methods=['GET'])
+def get_followed_channels():
+    try:
+        # Get the user_id from the query parameters or request body
+        user_id = request.args.get("user_id")  # From query parameter
+        if not user_id:
+            data = request.get_json()  # If sent in the body
+            user_id = data.get("user_id")
+
+        # Validate user_id
+        if not user_id:
+            return jsonify({"status": "error", "message": "User ID is required"}), 400
+
+        # Query to fetch the channels followed by the user
+        followed_channels = (
+            db.session.query(Channel.channel_id, Channel.name, Channel.slug)
+            .join(FollowedChannel, Channel.channel_id == FollowedChannel.channel_id)
+            .filter(FollowedChannel.user_id == user_id)
+            .all()
+        )
+
+        # Prepare response data
+        channels = [
+            {"id": channel.channel_id, "name": channel.name, "slug": channel.slug}
+            for channel in followed_channels
+        ]
+
+        return jsonify({"status": "success", "channels": channels}), 200
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+
+@bp.route('/', methods=['GET'])
+def home():
+    try:
+        # Load both User and Channel relationships
+        posts = (
+            db.session.query(Post)
+            .options(joinedload(Post.user), joinedload(Post.channel))
+            .all()
+        )
+
+        response = []
+        for post in posts:
+            response.append({
+                "id": post.post_id,
+                "content": post.content,
+                "upvote_counts": post.upvote_counts,
+                "downvote_counts": post.downvote_counts,
+                "created_at": post.created_at.isoformat(),
+                "category": post.channel.name,  # Use channel's name as category
+                "user": {
+                    "username": post.user.username,
+                    "institute": post.user.university,
+                }
+            })
+
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# @bp.route('/create_post', methods=['POST'])
+# def create_post():
+#     data = request.get_json()
+#     user_id = data.get('user_id')
+#     content = data.get('content')
+#     channel_id = data.get('channel_id')
+
+#     # Validate required fields
+#     if not all([user_id, content, channel_id]):
+#         return jsonify({"error": "Missing user_id, content, or channel_id"}), 400
+
+#     # Check if user exists
+#     user = User.query.get(user_id)
+#     if not user:
+#         return jsonify({"error": "User not found"}), 404
+
+#     # Check if channel exists
+#     channel = Channel.query.get(channel_id)
+#     if not channel:
+#         return jsonify({"error": "Channel not found"}), 404
+
+#     # For private channels, ensure the user is a member
+#     if channel.is_private:
+#         membership = FollowedChannel.query.filter_by(
+#             user_id=user_id,
+#             channel_id=channel_id
+#         ).first()
+#         if not membership:
+#             return jsonify({"error": "Not a member of this private channel"}), 403
+
+#     # Create the new post
+#     new_post = Post(
+#         content=content,
+#         user_id=user_id,
+#         channel_id=channel_id,
+#         created_at=datetime.utcnow()
+#     )
+
+#     # Update the channel's post count
+#     channel.post_count += 1
+
+#     try:
+#         db.session.add(new_post)
+#         db.session.commit()
+#         return jsonify({
+#             "message": "Post created successfully",
+#             "post_id": new_post.post_id
+#         }), 201
+#     except SQLAlchemyError as e:
+#         db.session.rollback()
+#         return jsonify({"error": str(e)}), 500

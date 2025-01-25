@@ -13,8 +13,9 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/posts");
+        const response = await fetch("http://127.0.0.1:5000/");
         const data = await response.json();
+        console.log(data);
         setPosts(data);
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -51,19 +52,15 @@ const Home = () => {
             </div>
           </div>
           <div className="card-content">
-            <h4>{post.title}</h4>
             <p>{post.content}</p>
           </div>
           <div className="card-footer">
             <div className="actions">
               <span>
-                <i className="fa fa-heart"></i> {post.like_count}
+                <i className="fa fa-thumbs-up"></i> {post.upvote_counts}
               </span>
               <span>
-                <i className="fa fa-comment"></i> {post.comment_count}
-              </span>
-              <span>
-                <i className="fa fa-eye"></i> {post.view_count}
+                <i className="fa fa-thumbs-down"></i> {post.downvote_counts}
               </span>
             </div>
             <div className="share">
