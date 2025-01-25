@@ -130,6 +130,10 @@ class Post(db.Model):
     updated_at = db.Column(db.DateTime, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     channel_id = db.Column(db.Integer, db.ForeignKey('channels.channel_id'), nullable=False)
+    
+    # Define relationships
+    user = db.relationship('User', backref='posts')
+    channel = db.relationship('Channel', backref='posts')
 
 # Votes Table
 class Vote(db.Model):
