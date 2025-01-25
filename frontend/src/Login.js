@@ -39,10 +39,9 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Successful login
-        localStorage.setItem("user_id", data.user_id); // Save user_id
-        localStorage.setItem("username", data.username); // Save username
-        localStorage.setItem("email", data.email); // Save email
+        localStorage.setItem("user_id", data.user_id); // This is crucial
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("email", data.email);
         setSuccessMessage(data.message);
 
         // Redirect to Home

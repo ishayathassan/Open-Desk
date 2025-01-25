@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom"; // Add this import
 import "./css/home.css"; // Import your custom CSS
 
 const Home = () => {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const location = useLocation(); // Get location state
   const [successMessage, setSuccessMessage] = useState("");
@@ -46,6 +48,11 @@ const Home = () => {
   //   setFormData({ ...formData, [name]: value });
   // };
 
+  const truncateContent = (content, maxLength = 150) => {
+    if (content.length <= maxLength) return content;
+    return content.substring(0, maxLength) + "...";
+  };
+
   return (
     <div id="feed-contents">
       {successMessage && (
@@ -71,8 +78,18 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="card-content">
-            <p>{post.content}</p>
+          <div
+            className="card-content"
+            onClick={() => navigate(`/posts/${post.id}`)}
+          >
+            <p style={{ cursor: "pointer" }}>
+              {truncateContent(post.content)}
+              {post.content.length > 150 && (
+                <Link to={`/posts/${post.id}`} className="see-more-link">
+                  See More
+                </Link>
+              )}
+            </p>
           </div>
           <div className="card-footer">
             <div className="actions">

@@ -12,21 +12,18 @@ import Login from "./Login.js";
 import Signup from "./Signup.js";
 import LeftSidebar from "./LeftSidebar.js";
 import CreatePost from "./CreatePost.js";
+import PostDetail from "./PostDetail.js"; // Create this new component
 
-// Check if a user is logged in (use localStorage or a state manager)
 const isLoggedIn = () => {
-  return !!localStorage.getItem("user_id"); // Change key based on your session data
+  return !!localStorage.getItem("user_id");
 };
 
-// Protected Route Component
 const ProtectedRoute = ({ element }) => {
   return isLoggedIn() ? element : <Navigate to="/login" replace />;
 };
 
 const App = () => {
   const location = useLocation();
-
-  // Define routes where the sidebar should not be shown
   const excludeSidebarRoutes = ["/login", "/signup"];
 
   return (
@@ -36,7 +33,6 @@ const App = () => {
       <div className="main">
         {!excludeSidebarRoutes.includes(location.pathname) && <LeftSidebar />}
 
-        {/* Main content */}
         <div>
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -46,6 +42,11 @@ const App = () => {
               path="/create_post"
               element={<ProtectedRoute element={<CreatePost />} />}
             />
+            {/* Add this new route for post details */}
+            <Route
+              path="/posts/:id"
+              element={<ProtectedRoute element={<PostDetail />} />}
+            />
           </Routes>
         </div>
       </div>
@@ -53,7 +54,6 @@ const App = () => {
   );
 };
 
-// Wrap App in Router for useLocation
 const WrappedApp = () => (
   <Router>
     <App />

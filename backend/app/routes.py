@@ -1,11 +1,25 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import joinedload
-from app.models import User,Department,University, Channel, FollowedChannel, Post
+from app.models import User,Department,University, Channel, FollowedChannel, Post, Vote
 from app.database import db
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 
 bp = Blueprint('routes', __name__)
+
+
+def get_authenticated_user_id():
+    # Get user_id from Authorization header
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        return None
+    
+    try:
+        # Expecting format: "Bearer <user_id>"
+        _, user_id = auth_header.split()
+        return int(user_id)
+    except (ValueError, IndexError, TypeError):
+        return None
 
 @bp.route('/signup', methods=['POST'])
 def signup():
@@ -89,7 +103,7 @@ def login():
 
         return jsonify({
             "message": "Login successful!",
-            "user_id": user.user_id,
+            "user_id": user.user_id,  # Make sure this is included
             "username": user.username,
             "email": user.email
         }), 200
@@ -221,6 +235,117 @@ def create_post():
             "message": "Post created successfully",
             "post_id": new_post.post_id
         }), 201
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/posts/<int:post_id>', methods=['GET'])
+def get_single_post(post_id):
+    try:
+        post = Post.query.options(joinedload(Post.user), joinedload(Post.channel)).get(post_id)
+        if not post:
+            return jsonify({"error": "Post not found"}), 404
+
+        # Serialize the post like in the home route
+        serialized_post = {
+            "id": post.post_id,
+            "content": post.content,
+            "upvote_counts": post.upvote_counts,
+            "downvote_counts": post.downvote_counts,
+            "created_at": post.created_at.isoformat(),
+            "category": post.channel.name,
+            "user": {
+                "username": post.user.username,
+                "institute": post.user.university,
+            }
+        }
+
+        return jsonify(serialized_post), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@bp.route('/posts/<int:post_id>/vote', methods=['GET'])
+def get_user_vote(post_id):
+    user_id = get_authenticated_user_id()  # Implement your auth check
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    vote = Vote.query.filter_by(
+        post_id=post_id,
+        user_id=user_id
+    ).first()
+
+    return jsonify({
+        "vote_type": vote.type if vote else None
+    }), 200
+
+@bp.route('/posts/<int:post_id>/vote', methods=['POST'])
+def handle_vote(post_id):
+    user_id = get_authenticated_user_id()
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.get_json()
+    vote_type = data.get('vote_type')
+    
+    if vote_type not in ['upvote', 'downvote']:
+        return jsonify({"error": "Invalid vote type"}), 400
+
+    post = Post.query.get(post_id)
+    if not post:
+        return jsonify({"error": "Post not found"}), 404
+
+    # Check existing vote
+    existing_vote = Vote.query.filter_by(
+        post_id=post_id,
+        user_id=user_id
+    ).first()
+
+    response_data = {}
+    
+    try:
+        if existing_vote:
+            # User is changing/canceling vote
+            if existing_vote.type == vote_type:
+                # Cancel vote
+                db.session.delete(existing_vote)
+                if vote_type == 'upvote':
+                    post.upvote_counts -= 1
+                else:
+                    post.downvote_counts -= 1
+                response_data['new_vote_status'] = None
+            else:
+                # Change vote type
+                existing_vote.type = vote_type
+                if vote_type == 'upvote':
+                    post.upvote_counts += 1
+                    post.downvote_counts -= 1
+                else:
+                    post.downvote_counts += 1
+                    post.upvote_counts -= 1
+                response_data['new_vote_status'] = vote_type
+        else:
+            # New vote
+            new_vote = Vote(
+                type=vote_type,
+                post_id=post_id,
+                user_id=user_id,
+                created_at=datetime.utcnow()
+            )
+            db.session.add(new_vote)
+            if vote_type == 'upvote':
+                post.upvote_counts += 1
+            else:
+                post.downvote_counts += 1
+            response_data['new_vote_status'] = vote_type
+
+        db.session.commit()
+        response_data.update({
+            "new_upvotes": post.upvote_counts,
+            "new_downvotes": post.downvote_counts
+        })
+        return jsonify(response_data), 200
+
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
