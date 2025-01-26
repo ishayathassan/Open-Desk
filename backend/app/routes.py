@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import joinedload
-from app.models import User,Department,University, Channel, FollowedChannel, Post, Vote
+from app.models import User,Department,University, Channel, FollowedChannel, Post, Vote, Comment
 from app.database import db
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
@@ -257,6 +257,7 @@ def get_single_post(post_id):
             "user": {
                 "username": post.user.username,
                 "institute": post.user.university,
+                "user_id": post.user.user_id,
             }
         }
 
@@ -345,6 +346,153 @@ def handle_vote(post_id):
             "new_downvotes": post.downvote_counts
         })
         return jsonify(response_data), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    
+@bp.route('/posts/<int:post_id>/comments', methods=['GET'])
+def get_comments(post_id):
+    try:
+        comments = Comment.query.options(
+            joinedload(Comment.user)  # Now works because relationship exists
+        ).filter_by(post_id=post_id, parent_id=None).all()
+
+        # In get_comments route
+        serialized = [{
+            "comment_id": c.comment_id,
+            "content": c.content,
+            "created_at": c.created_at.isoformat(),
+            "user": {
+                "user_id": c.user.user_id,  # Add this line
+                "username": c.user.username,
+                "avatar": c.user.profile_picture or "/images/user.png"
+            }
+        } for c in comments]
+
+        return jsonify(serialized), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/posts/<int:post_id>/comments', methods=['POST'])
+def create_comment(post_id):
+    try:
+        user_id = get_authenticated_user_id()
+        if not user_id:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        data = request.get_json()
+        content = data.get('content')
+        parent_id = data.get('parent_id')
+
+        if not content:
+            return jsonify({"error": "Comment content is required"}), 400
+
+        new_comment = Comment(
+            content=content,
+            post_id=post_id,
+            user_id=user_id,
+            parent_id=parent_id,
+            created_at=datetime.utcnow()
+        )
+
+        db.session.add(new_comment)
+        db.session.commit()
+
+        # Get the user details
+        user = User.query.get(user_id)
+
+        return jsonify({
+            "comment_id": new_comment.comment_id,
+            "content": new_comment.content,
+            "created_at": new_comment.created_at.isoformat(),
+            "user": {
+                "user_id": user.user_id,
+                "username": user.username,
+                "avatar": user.profile_picture or "/images/user.png"
+            }
+        }), 201
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    
+@bp.route('/comments/<int:comment_id>', methods=['DELETE'])
+def delete_comment(comment_id):
+    try:
+        user_id = get_authenticated_user_id()
+        if not user_id:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        comment = Comment.query.get(comment_id)
+        if not comment:
+            return jsonify({"error": "Comment not found"}), 404
+
+        if comment.user_id != user_id:
+            return jsonify({"error": "Unauthorized to delete this comment"}), 403
+
+        db.session.delete(comment)
+        db.session.commit()
+
+        return jsonify({"message": "Comment deleted successfully"}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    
+@bp.route('/posts/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    try:
+        user_id = get_authenticated_user_id()
+        if not user_id:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        post = Post.query.get(post_id)
+        if not post:
+            return jsonify({"error": "Post not found"}), 404
+
+        if post.user_id != user_id:
+            return jsonify({"error": "Unauthorized to delete this post"}), 403
+
+        db.session.delete(post)
+        db.session.commit()
+
+        return jsonify({"message": "Post deleted successfully"}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+# Update Post
+@bp.route('/posts/<int:post_id>', methods=['PUT'])
+def update_post(post_id):
+    try:
+        user_id = get_authenticated_user_id()
+        if not user_id:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        post = Post.query.get(post_id)
+        if not post:
+            return jsonify({"error": "Post not found"}), 404
+
+        if post.user_id != user_id:
+            return jsonify({"error": "Unauthorized to edit this post"}), 403
+
+        data = request.get_json()
+        new_content = data.get('content')
+        
+        if not new_content:
+            return jsonify({"error": "Content is required"}), 400
+
+        post.content = new_content
+        post.updated_at = datetime.utcnow()
+        db.session.commit()
+
+        return jsonify({
+            "message": "Post updated successfully",
+            "content": post.content,
+            "updated_at": post.updated_at.isoformat()
+        }), 200
 
     except SQLAlchemyError as e:
         db.session.rollback()

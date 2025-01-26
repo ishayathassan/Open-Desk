@@ -179,6 +179,11 @@ class Comment(db.Model):
     parent_id = db.Column(db.Integer, db.ForeignKey('comments.comment_id'), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.post_id'), nullable=False)
+    
+    # Add relationships
+    user = db.relationship('User', backref='comments')  # <-- THIS IS CRUCIAL
+    post = db.relationship('Post', backref='comments')
+    replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[comment_id]))
 
 # Channel Tags Table
 class ChannelTag(db.Model):
