@@ -1,0 +1,287 @@
+.channel_cover {
+  height: 300px;
+  width: 70vw; /* Expand the width of the cover */
+  background-color: white;
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 20px; /* Center the cover a bit more */
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+}
+
+.channel_cover img {
+  width: 100%;
+  height: 65%;
+  object-fit: cover;
+}
+
+.channel_profile_pic {
+  position: absolute;
+  margin-left: 20px;
+  bottom: 20px; /* Create better spacing between the profile pic and button */
+  width: 100px; /* Slightly larger profile picture */
+  height: 100px;
+  border-radius: 50%;
+  border: 5px solid white;
+  background-color: gray;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.channel_profile_pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.channel_cover h1 {
+  margin-left: 140px;
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.channel_cover button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ff851b;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.channel_cover button:hover {
+  background-color: #ff6a00; /* Add hover effect for the button */
+}
+
+.channel-content {
+  display: flex;
+  gap: 2rem;
+}
+
+.posts-section {
+  flex: 1;
+  max-width: 800px;
+}
+
+.post-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  margin-left: 30px;
+  margin-top: 30px;
+  width: 850px;
+}
+
+.card-header {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.user-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.first-row,
+.second-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bullet {
+  color: #8a8a8a;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.post-category {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a4a4a;
+}
+
+.post-time,
+.post-channel,
+.post-user {
+  font-size: 12px;
+  font-weight: 400;
+  color: #8a8a8a;
+}
+
+.card-content p {
+  font-size: 14px;
+  color: #4a4a4a;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 20px;
+}
+
+.actions span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+
+.share {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+
+.share:hover {
+  color: #ff851b;
+}
+/* SingleChannel.css */
+.single-channel-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.channel-content-wrapper {
+  display: flex;
+  gap: 2rem;
+  position: relative;
+}
+
+.posts-section {
+  flex: 1;
+  max-width: 800px;
+  margin-right: 320px; /* Account for sidebar width + gap */
+}
+
+.page-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; /* Ensures spacing between cover and sidebar */
+  align-items: flex-start; /* Aligns them at the top */
+  gap: 20px; /* Adds space between the cover and the sidebar */
+}
+/* Tabs Styles */
+.tabs-container {
+  margin-left: 20px;
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #8a8a8a; /* Default gray color */
+  transition: all 0.3s ease;
+  position: relative;
+  border-radius: 8px; /* For smooth hover background */
+}
+
+/* Hover state for non-active tabs */
+.tab-button:not(.active):hover {
+  background-color: #ff851b; /* Orange background */
+  color: white; /* White text on hover */
+}
+
+/* Active tab styling */
+.tab-button.active {
+  color: #ff851b; /* Orange text */
+  font-weight: 600;
+}
+
+/* Active tab underline */
+.tab-button.active::after {
+  content: "";
+  position: absolute;
+  bottom: -11px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #ff851b; /* Orange underline */
+}
+
+/* Optional: Remove hover effect for active tab */
+.tab-button.active:hover {
+  background-color: transparent;
+  cursor: default;
+}
+/* About Section Styles */
+.about-section {
+  margin-left: 30px;
+  margin-top: 30px;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  width: 850px;
+}
+
+.about-section h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #4a4a4a;
+}
+
+.about-section p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.about-details {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.about-details p {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.about-details strong {
+  color: #4a4a4a;
+  margin-right: 8px;
+}

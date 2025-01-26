@@ -1,13 +1,16 @@
+import { Link, useNavigate } from "react-router-dom";
 import "./css/home.css"; // Import your custom CSS
 
 const LeftSidebar = () => {
   return (
     <div id="sidebar">
       <ul>
-        <li className="sidebar-links">
-          <img src="/images/feed.png" alt="Feed" />
-          <span>Feed</span>
-        </li>
+        <Link to="/">
+          <li className="sidebar-links">
+            <img src="/images/feed.png" alt="Feed" />
+            <span>Feed</span>
+          </li>
+        </Link>
         <li className="sidebar-links">
           <img src="/images/trending.png" alt="Trending" />
           <span>Trending</span>
