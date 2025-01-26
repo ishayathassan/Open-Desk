@@ -64,6 +64,9 @@ class University(db.Model):
     avg_cocurriculars = db.Column(db.Float, default=0.0)
     avg_alumni = db.Column(db.Float, default=0.0)
     uni_rating = db.Column(db.Float, default=0.0)
+    
+     # Define a relationship with Overview
+    overview = db.relationship('Overview', backref='university', uselist=False)
 
 # Private Channel Table
 class PrivateChannel(db.Model):
@@ -82,6 +85,9 @@ class Overview(db.Model):
     about = db.Column(db.Text)
     department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'))
     uni_id = db.Column(db.Integer, db.ForeignKey('university.uni_id'))
+    
+    # Define a relationship with Department
+    department = db.relationship('Department', backref='overview', uselist=False)
 
 # Departments Table
 class Department(db.Model):

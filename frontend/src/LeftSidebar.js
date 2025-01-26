@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./css/home.css"; // Import your custom CSS
 
 const LeftSidebar = () => {
+  const universityId = localStorage.getItem("university_id");
   return (
     <div id="sidebar">
       <ul>
@@ -16,8 +17,10 @@ const LeftSidebar = () => {
           <span>Trending</span>
         </li>
         <li className="sidebar-links">
-          <img src="/images/school.png" alt="My Campus" />
-          <span>My Campus</span>
+          <Link to={`/universities/${universityId}`}>
+            <img src="/images/school.png" alt="My Campus" />
+            <span>My Campus</span>
+          </Link>
         </li>
         <li className="sidebar-links">
           <img src="/images/school.png" alt="All Channels" />

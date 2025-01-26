@@ -285,3 +285,155 @@
   color: #4a4a4a;
   margin-right: 8px;
 }
+#company_reviews {
+  width: 95%;
+  max-width: 1200px; /* Optional: Limit the width for larger screens */
+  background-color: #ffffff; /* White background for the section */
+  border-radius: 12px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 20px 30px; /* Add spacing inside the section */
+  margin: 20px auto; /* Center horizontally and add spacing from top */
+  display: block; /* Ensure it's treated as a block-level element */
+}
+
+#company_reviews h2 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #000; /* Black text color */
+  margin-bottom: 20px; /* Spacing below the title */
+}
+
+#review_summary {
+  display: flex; /* Flexbox for horizontal alignment */
+  align-items: center;
+  justify-content: space-between; /* Space between the two sections */
+  margin-bottom: 20px; /* Spacing below the summary */
+}
+
+#overall_rating {
+  text-align: center; /* Center-align the overall rating */
+  flex: 1; /* Take up equal space */
+}
+
+.rating_number {
+  font-size: 36px;
+  font-weight: bold;
+  color: #000; /* Black for prominent display */
+}
+
+.stars {
+  display: flex;
+  gap: 4px; /* Spacing between star icons */
+  justify-content: center;
+  margin: 10px 0; /* Spacing around stars */
+}
+
+.stars img {
+  width: 20px; /* Size for each star */
+  height: 20px;
+}
+
+.review_count {
+  font-size: 14px;
+  color: #6c757d; /* Subtle gray text */
+}
+
+.divider {
+  width: 1px;
+  background-color: #ddd; /* Light gray divider */
+  height: 80px; /* Matches the height of the overall rating section */
+  margin: 0 20px; /* Spacing between sections */
+}
+
+#detailed_ratings {
+  flex: 2; /* Take up twice the space of the overall rating section */
+  display: flex;
+  flex-direction: column; /* Stack ratings vertically */
+  gap: 10px; /* Spacing between rating items */
+}
+
+#detailed_ratings p {
+  font-size: 14px;
+  color: #000; /* Black text for details */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Spacing between icon and text */
+}
+
+#detailed_ratings img {
+  width: 16px;
+  height: 16px; /* Smaller star icons */
+}
+
+#review_description {
+  font-size: 14px;
+  color: #000; /* Black for clear readability */
+  line-height: 1.6; /* Improve text readability */
+  border-top: 1px solid #ddd; /* Light gray top border */
+  padding-top: 10px; /* Spacing above the description text */
+}
+
+.review-box {
+  width: 90%;
+  max-width: 1200px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px auto;
+}
+
+.rating {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stars {
+  font-size: 1.5em;
+  color: #ffcc00; /* Gold for the stars */
+  font-weight: bold;
+}
+
+.rating h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333333;
+}
+
+.reviewer-details {
+  margin: 10px 0;
+  color: #777777;
+  font-size: 0.9em;
+}
+
+.review-content strong {
+  display: block;
+  margin: 10px 0 5px;
+  font-size: 1em;
+  color: #333333;
+}
+
+.review-content p {
+  margin: 0 0 10px;
+  font-size: 0.95em;
+  color: #555555;
+}
+
+.review-actions {
+  margin-top: 10px;
+}
+
+.review-actions button {
+  background-color: #f0f0f0;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.9em;
+  color: #555555;
+  cursor: pointer;
+}
+
+.review-actions button:hover {
+  background-color: #e6e6e6;
+}

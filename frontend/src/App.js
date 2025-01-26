@@ -14,6 +14,7 @@ import LeftSidebar from "./LeftSidebar.js";
 import CreatePost from "./CreatePost.js";
 import PostDetail from "./PostDetail.js"; // Create this new component
 import SingleChannel from "./SingleChannel.js";
+import UniversityDetails from "./UniversityDetails.js";
 
 const isLoggedIn = () => {
   return !!localStorage.getItem("user_id");
@@ -49,6 +50,10 @@ const App = () => {
               element={<ProtectedRoute element={<PostDetail />} />}
             />
             <Route path="/channels/:channelId" element={<SingleChannel />} />
+            <Route
+              path="/universities/:uniId"
+              element={<UniversityDetails />}
+            />
           </Routes>
         </div>
       </div>

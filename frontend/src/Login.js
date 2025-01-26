@@ -42,6 +42,7 @@ const Login = () => {
         localStorage.setItem("user_id", data.user_id); // This is crucial
         localStorage.setItem("username", data.username);
         localStorage.setItem("email", data.email);
+        localStorage.setItem("university_id", data.university_id); // Store university ID
         setSuccessMessage(data.message);
 
         // Redirect to Home

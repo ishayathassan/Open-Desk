@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import joinedload
-from app.models import User,Department,University, Channel, FollowedChannel, Post, Vote, Comment
+from app.models import User,Department,University, Channel, FollowedChannel, Post, Vote, Comment, Overview, Rating
 from app.database import db
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
@@ -105,7 +105,8 @@ def login():
             "message": "Login successful!",
             "user_id": user.user_id,  # Make sure this is included
             "username": user.username,
-            "email": user.email
+            "email": user.email,
+            "university_id": user.university,  # Assuming university is stored as ID
         }), 200
 
     except Exception as e:
@@ -604,3 +605,79 @@ def follow_status(channel_id):
         "username": username,
         "follow_status": "Following"  # Replace with actual logic
     })
+
+@bp.route('/universities/<int:uni_id>', methods=['GET'])
+def get_university(uni_id):
+    try:
+        university = University.query.get_or_404(uni_id)
+        
+        # Fetch the related Overview and Department
+        overview = university.overview  # Access the related Overview
+        department = overview.department if overview else None  # Access the related Department
+        
+        return jsonify({
+            "uni_id": university.uni_id,
+            "name": university.name,
+            "logo_image": university.logo_image,
+            "no_of_reviews": university.no_of_reviews,
+            "avg_career_growth": university.avg_career_growth,
+            "avg_uni_culture": university.avg_uni_culture,
+            "avg_resources": university.avg_resources,
+            "avg_cocurriculars": university.avg_cocurriculars,
+            "avg_alumni": university.avg_alumni,
+            "uni_rating": university.uni_rating,
+            "overview": {
+                "website_url": overview.website_url if overview else None,
+                "location": overview.location if overview else None,
+                "about": overview.about if overview else None,
+                "department_name": department.department_name if department else None
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+@bp.route('/universities/<int:uni_id>/posts', methods=['GET'])
+def get_university_posts(uni_id):
+    try:
+        # Fetch posts where the user's university matches the given uni_id
+        posts = (
+            db.session.query(Post)
+            .join(User, Post.user_id == User.user_id)
+            .filter(User.university == uni_id)
+            .options(joinedload(Post.user))
+            .all()
+        )
+
+        return jsonify([{
+            "id": post.post_id,
+            "content": post.content,
+            "upvote_counts": post.upvote_counts,
+            "downvote_counts": post.downvote_counts,
+            "created_at": post.created_at.isoformat(),
+            "user": {
+                "username": post.user.username,
+                "institute": post.user.university,
+            }
+        } for post in posts]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+    
+@bp.route('/universities/<int:uni_id>/reviews', methods=['GET'])
+def get_reviews(uni_id):
+    reviews = Rating.query.filter_by(uni_id=uni_id).all()
+    
+    if not reviews:
+        return jsonify({"message": "No reviews found for this university"}), 404
+    
+    review_list = []
+    for review in reviews:
+        review_data = {
+            "rating": review.career_growth,
+            "comments": review.comments,
+            "user_id": review.user_id,
+            "username": review.user.username,
+            "date": review.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        }
+        review_list.append(review_data)
+    
+    return jsonify({"reviews": review_list}), 200

@@ -162,7 +162,8 @@ input[type="number"]::-webkit-outer-spin-button {
 #login-card {
   width: 630px;
   margin: auto;
-  margin-top: 130px;
+  margin-top: 180px;
+  margin-left: 600px;
 }
 #login-card h1 {
   margin-bottom: 30px;
