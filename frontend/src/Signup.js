@@ -12,7 +12,7 @@ const Signup = () => {
     username: "",
     password1: "",
     password2: "",
-    university: "",
+    university_id: "", // Change from "university" to "university_id"
     program: "",
     year_of_study: "",
     is_anonymous: false,
@@ -70,12 +70,24 @@ const Signup = () => {
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+
+    // Clear errors when the user starts typing or selects an option
     if (name === "password1" || name === "password2") {
-      setErrors({ ...errors, passwordMismatch: false }); // Reset password error
+      setErrors((prev) => ({ ...prev, passwordMismatch: false }));
     }
-    if (name === "username" || name === "email") {
-      setErrors({ ...errors, usernameError: "", emailError: "" }); // Reset username/email errors
+    if (name === "username") {
+      setErrors((prev) => ({ ...prev, usernameError: "" }));
     }
+    if (name === "email") {
+      setErrors((prev) => ({ ...prev, emailError: "" }));
+    }
+    if (name === "university_id") {
+      setErrors((prev) => ({ ...prev, universityError: "" }));
+    }
+    if (name === "program") {
+      setErrors((prev) => ({ ...prev, programError: "" }));
+    }
+
     // Check password strength as user types
     if (name === "password1") {
       validatePasswordStrength(value);
@@ -85,13 +97,15 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.password1 !== formData.password2) {
-      setErrors({ ...errors, passwordMismatch: true });
-      setFormData({ ...formData, password1: "", password2: "" });
-      return;
-    }
-    if (!isPasswordStrong) {
-      setPasswordStrengthMessage("Password must meet the strength criteria.");
+    // Log the form data for debugging
+    console.log("Form data before submission:", formData);
+
+    // Validate required fields
+    if (!formData.university_id) {
+      setErrors((prev) => ({
+        ...prev,
+        universityError: "Please select a university.",
+      }));
       return;
     }
 
@@ -100,15 +114,16 @@ const Signup = () => {
       email: formData.email,
       username: formData.username,
       password: formData.password1,
-      university: formData.university,
+      university_id: parseInt(formData.university_id, 10), // Ensure university_id is an integer
       program: formData.program,
       year_of_study: formData.year_of_study,
       is_anonymous: formData.is_anonymous,
     };
 
-    try {
-      console.log("Sending data:", user); // Log data before sending
+    // Log the user object for debugging
+    console.log("Sending data:", user);
 
+    try {
       const response = await fetch("http://127.0.0.1:5000/signup", {
         method: "POST",
         headers: {
@@ -249,14 +264,17 @@ const Signup = () => {
           <div>
             <select
               id="university"
-              name="university"
-              value={formData.university}
+              name="university_id"
+              value={formData.university_id}
               onChange={handleChange}
+              style={{ borderColor: errors.universityError ? "red" : "" }}
               required
             >
               <option value="">Select University</option>
               {universities.map((university) => (
-                <option key={university.id} value={university.name}>
+                <option key={university.uni_id} value={university.uni_id}>
+                  {" "}
+                  {/* Use uni_id as the value */}
                   {university.name}
                 </option>
               ))}

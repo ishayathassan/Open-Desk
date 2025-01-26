@@ -49,8 +49,10 @@ const CreatePost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userId = localStorage.getItem("user_id");
+    const universityId = localStorage.getItem("university_id"); // Add this line
 
-    if (!userId) {
+    if (!userId || !universityId) {
+      // Check for universityId
       alert("You must be logged in to post.");
       return;
     }
@@ -65,6 +67,7 @@ const CreatePost = () => {
           user_id: userId,
           content: content,
           channel_id: selectedChannel,
+          university_id: universityId, // Include university_id
         }),
       });
 

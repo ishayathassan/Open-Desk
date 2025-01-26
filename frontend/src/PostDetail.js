@@ -38,7 +38,7 @@ const PostDetail = () => {
   const [error, setError] = useState("");
   const [userVote, setUserVote] = useState(null);
   const [hoverVote, setHoverVote] = useState(null);
-  const userId = parseInt(localStorage.getItem("user_id"), 10);
+  const userId = parseInt(localStorage.getItem("user_id"), 10); // Confirm user_id exists in localStorage
 
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState([]); // Initialize with empty array
@@ -85,10 +85,10 @@ const PostDetail = () => {
         }));
         setShowEditModal(false);
       } else {
-        alert(data.error || "Failed to update post");
+        console.log(data.error || "Failed to update post");
       }
     } catch (err) {
-      alert("Failed to connect to server");
+      console.log("Failed to connect to server");
     }
   };
 
@@ -105,10 +105,10 @@ const PostDetail = () => {
         window.location.href = "/"; // Redirect to home after deletion
       } else {
         const data = await response.json();
-        alert(data.error || "Failed to delete post");
+        console.log(data.error || "Failed to delete post");
       }
     } catch (err) {
-      alert("Failed to connect to server");
+      console.log("Failed to connect to server");
     } finally {
       setShowDeletePostModal(false);
     }
@@ -372,13 +372,23 @@ const PostDetail = () => {
               <span className="post-user">{post.user.username}</span>
             </div>
           </div>
-          <div className="post-menu-container">
+          {/* <div className="post-menu-container">
             {post.user?.user_id == userId && (
               <button className="post-menu-btn" onClick={handlePostMenuToggle}>
                 <i className="fa-solid fa-ellipsis"></i>
               </button>
             )}
 
+
+          </div> */}
+          {console.log(post.user?.user_id)}
+          {console.log(userId)}
+          <div className="post-menu-container">
+            {post.user?.user_id === userId && (
+              <button className="post-menu-btn" onClick={handlePostMenuToggle}>
+                <i className="fa-solid fa-ellipsis"></i>
+              </button>
+            )}
             {showPostMenu && <PostMenuDropdown />}
           </div>
         </div>

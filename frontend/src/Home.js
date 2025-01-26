@@ -27,8 +27,18 @@ const Home = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch posts");
+        }
         const data = await response.json();
-        setPosts(data);
+
+        // Ensure data is always an array
+        if (Array.isArray(data)) {
+          setPosts(data);
+        } else {
+          console.error("Invalid posts data:", data);
+          setPosts([]); // Fallback to empty array
+        }
 
         // Fetch user votes for all posts
         if (userId) {
@@ -51,6 +61,7 @@ const Home = () => {
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
+        setPosts([]); // Fallback to empty array
       }
     };
     fetchPosts();
@@ -132,7 +143,9 @@ const Home = () => {
                 </span>
               </div>
               <div className="second-row">
-                <span className="post-channel">{post.user.institute}</span>
+                <Link to={`/universities/${post.university_id}`}>
+                  <span className="post-channel">{post.user.institute}</span>
+                </Link>
                 <span className="bullet">•</span>
                 <span className="post-user">{post.user.username}</span>
               </div>

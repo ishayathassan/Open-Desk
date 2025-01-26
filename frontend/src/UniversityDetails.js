@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "./css/SingleChannel.css";
 
 const UniversityDetails = () => {
   const { uniId } = useParams();
-  const [activeTab, setActiveTab] = useState("about");
+  const [activeTab, setActiveTab] = useState("overview");
   const [university, setUniversity] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [posts, setPosts] = useState([]); // Initialize posts as an empty array
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ const UniversityDetails = () => {
         if (reviewsData.message) {
           setReviews([]);
         } else {
-          setReviews(reviewsData.reviews);
+          setReviews(reviewsData.reviews || []); // Ensure reviews is an array
         }
       } catch (error) {
         console.error("Error fetching reviews data:", error);
@@ -53,8 +54,34 @@ const UniversityDetails = () => {
       }
     };
 
+    const fetchPostsData = async () => {
+      try {
+        const postsResponse = await fetch(
+          `http://127.0.0.1:5000/universities/${uniId}/posts`
+        );
+
+        if (!postsResponse.ok) {
+          if (postsResponse.status === 404) {
+            setPosts([]); // Set posts to an empty array if no posts are found
+            return;
+          }
+          throw new Error("Failed to fetch posts");
+        }
+
+        const postsData = await postsResponse.json();
+        console.log("Posts Data:", postsData); // Add this line to debug
+
+        // If the postsData is directly an array, use it like this:
+        setPosts(postsData || []); // Directly set the posts array
+      } catch (error) {
+        console.error("Error fetching posts data:", error);
+        setError(error.message);
+      }
+    };
+
     fetchUniversityData();
     fetchReviewsData();
+    fetchPostsData();
   }, [uniId]);
 
   if (error) return <div>Error: {error}</div>;
@@ -84,12 +111,6 @@ const UniversityDetails = () => {
       {/* Tabs Section */}
       <div className="tabs-container">
         <button
-          className={`tab-button ${activeTab === "about" ? "active" : ""}`}
-          onClick={() => setActiveTab("about")}
-        >
-          About
-        </button>
-        <button
           className={`tab-button ${activeTab === "overview" ? "active" : ""}`}
           onClick={() => setActiveTab("overview")}
         >
@@ -101,34 +122,22 @@ const UniversityDetails = () => {
         >
           Reviews
         </button>
+        <button
+          className={`tab-button ${activeTab === "posts" ? "active" : ""}`}
+          onClick={() => setActiveTab("posts")}
+        >
+          Posts
+        </button>
       </div>
 
       <div className="channel-content-wrapper">
-        {activeTab === "about" && (
+        {activeTab === "overview" && (
           <div className="about-section">
             <div className="about-card">
               <div className="about-card-header">
-                <h2>University Rating</h2>
-              </div>
-              <div className="about-card-content">
-                <p>Overall Rating: {university.uni_rating}</p>
-                <p>Career Growth: {university.avg_career_growth}</p>
-                <p>University Culture: {university.avg_uni_culture}</p>
-                <p>Resources: {university.avg_resources}</p>
-                <p>Co-curriculars: {university.avg_cocurriculars}</p>
-                <p>Alumni: {university.avg_alumni}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "overview" && (
-          <div className="overview-section">
-            <div className="overview-card">
-              <div className="overview-card-header">
                 <h2>Overview</h2>
               </div>
-              <div className="overview-card-content">
+              <div className="about-card-content">
                 {university.overview ? (
                   <>
                     <p>
@@ -180,6 +189,63 @@ const UniversityDetails = () => {
                   </div>
                   <div className="review-actions">
                     <button>Helpful ({review.helpfulCount})</button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === "posts" && (
+          <div className="posts-section">
+            {posts.length === 0 ? (
+              <p>No posts available.</p>
+            ) : (
+              posts.map((post) => (
+                <div key={post.id} className="post-card">
+                  <div className="card-header">
+                    <img
+                      src="/images/user.png"
+                      alt="User"
+                      className="user-icon"
+                    />
+                    <div className="header-info">
+                      <div className="first-row">
+                        <Link to="">
+                          <span className="post-category">
+                            {post.channel_name}
+                          </span>
+                        </Link>
+                        <span className="bullet">•</span>
+                        <span className="post-time">
+                          {new Date(post.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="second-row">
+                        <span className="post-channel">
+                          {post.user.institute}
+                        </span>
+                        <span className="bullet">•</span>
+                        <span className="post-user">{post.user.username}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card-content">
+                    <p>{post.content}</p>
+                  </div>
+                  <div className="card-footer">
+                    <div className="actions">
+                      <span>
+                        <i className="fa fa-thumbs-up"></i> {post.upvote_counts}
+                      </span>
+                      <span>
+                        <i className="fa fa-thumbs-down"></i>{" "}
+                        {post.downvote_counts}
+                      </span>
+                    </div>
+                    <div className="share">
+                      <i className="fa fa-share-alt"></i> Share
+                    </div>
                   </div>
                 </div>
               ))

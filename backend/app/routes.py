@@ -30,10 +30,16 @@ def signup():
         username = data.get('username')
         email = data.get('email')
         password = data.get('password')
+        university_id = data.get('university_id')  # Get university_id instead of university name
 
         # Basic validation
-        if not username or not email or not password:
+        if not username or not email or not password or not university_id:
             return jsonify({"error": "All fields are required"}), 400
+
+        # Check if the provided university_id exists
+        university = University.query.get(university_id)
+        if not university:
+            return jsonify({"error": "Invalid university ID"}), 400
 
         # Check for existing user
         existing_user = User.query.filter((User.email == email) | (User.username == username)).first()
@@ -48,7 +54,7 @@ def signup():
             username=username,
             email=email,
             password=password,
-            university=data.get('university'),
+            university_id=university_id,  # Use university_id instead of university name
             program=data.get('program'),
             year_of_study=data.get('year_of_study'),
             full_name=data.get('full_name'),
@@ -69,7 +75,7 @@ def signup():
 def get_universities():
     # Fetch only the names of universities
     universities = University.query.with_entities(University.uni_id, University.name).all()
-    result = [{"id": uni.uni_id, "name": uni.name} for uni in universities]
+    result = [{"uni_id": uni.uni_id, "name": uni.name} for uni in universities]
     return jsonify(result)
 
 @bp.route('/programs', methods=['GET'])
@@ -100,17 +106,16 @@ def login():
         if user.password != password:
             return jsonify({"error": "Incorrect password"}), 401  # Wrong password
 
-
         return jsonify({
             "message": "Login successful!",
-            "user_id": user.user_id,  # Make sure this is included
+            "user_id": user.user_id,
             "username": user.username,
             "email": user.email,
-            "university_id": user.university,  # Assuming university is stored as ID
+            "university_id": user.university_id,  # Use university_id instead of university
         }), 200
 
     except Exception as e:
-        print("Error during login:", e)  # Debugging
+        print("Error during login:", e)
         return jsonify({"error": "An error occurred. Please try again later."}), 500
     
 @bp.route("/logout", methods=["POST"])
@@ -159,7 +164,6 @@ def get_followed_channels():
 @bp.route('/', methods=['GET'])
 def home():
     try:
-        # Load both User and Channel relationships
         posts = (
             db.session.query(Post)
             .options(joinedload(Post.user), joinedload(Post.channel))
@@ -174,11 +178,12 @@ def home():
                 "upvote_counts": post.upvote_counts,
                 "downvote_counts": post.downvote_counts,
                 "created_at": post.created_at.isoformat(),
-                "channel_name": post.channel.name,  # Use channel's name as category
-                "channel_id": post.channel.channel_id,  # Include channel_id
+                "channel_name": post.channel.name if post.channel else None,
+                "channel_id": post.channel.channel_id if post.channel else None,
+                "university_id": post.university.uni_id if post.university else None,
                 "user": {
-                    "username": post.user.username,
-                    "institute": post.user.university,
+                    "username": post.user.username if post.user else None,
+                    "institute": post.user.university.name if post.user and post.user.university else None,
                 }
             })
 
@@ -189,57 +194,79 @@ def home():
 
 @bp.route('/create_post', methods=['POST'])
 def create_post():
-    data = request.get_json()
-    user_id = data.get('user_id')
-    content = data.get('content')
-    channel_id = data.get('channel_id')
-
-    # Validate required fields
-    if not all([user_id, content, channel_id]):
-        return jsonify({"error": "Missing user_id, content, or channel_id"}), 400
-
-    # Check if user exists
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    # Check if channel exists
-    channel = Channel.query.get(channel_id)
-    if not channel:
-        return jsonify({"error": "Channel not found"}), 404
-
-    # For private channels, ensure the user is a member
-    if channel.is_private:
-        membership = FollowedChannel.query.filter_by(
-            user_id=user_id,
-            channel_id=channel_id
-        ).first()
-        if not membership:
-            return jsonify({"error": "Not a member of this private channel"}), 403
-
-    # Create the new post
-    new_post = Post(
-        content=content,
-        user_id=user_id,
-        channel_id=channel_id,
-        created_at=datetime.utcnow()
-    )
-
-    # Update the channel's post count
-    if channel.post_count is None:
-        channel.post_count = 0  # Initialize to 0 if None
-    channel.post_count += 1
-
     try:
+        data = request.get_json()
+        print("Received data:", data)
+
+        user_id = data.get('user_id')
+        content = data.get('content')
+        channel_id = data.get('channel_id')
+        uni_id = data.get('university_id')  # Use uni_id here to match the model
+
+        # Validate required fields
+        if not all([user_id, content, channel_id, uni_id]):
+            print("Missing required fields")
+            return jsonify({"error": "Missing required fields"}), 400
+
+        # Check if user exists
+        user = User.query.get(user_id)
+        if not user:
+            print(f"User not found: user_id={user_id}")
+            return jsonify({"error": "User not found"}), 404
+
+        # Check if university exists
+        university = University.query.get(uni_id)
+        if not university:
+            print(f"University not found: uni_id={uni_id}")
+            return jsonify({"error": "University not found"}), 404
+
+        # Check if channel exists
+        channel = Channel.query.get(channel_id)
+        if not channel:
+            print(f"Channel not found: channel_id={channel_id}")
+            return jsonify({"error": "Channel not found"}), 404
+
+        # For private channels, ensure user is a member
+        if channel.is_private:
+            membership = FollowedChannel.query.filter_by(
+                user_id=user_id,
+                channel_id=channel_id
+            ).first()
+            if not membership:
+                print(f"User is not a member of the private channel: user_id={user_id}, channel_id={channel_id}")
+                return jsonify({"error": "Not a member of this private channel"}), 403
+
+        # Create the new post
+        new_post = Post(
+            content=content,
+            user_id=user_id,
+            channel_id=channel_id,
+            uni_id=uni_id,  # Use uni_id here to match the model
+            created_at=datetime.utcnow()
+        )
+        print("New post created:", new_post)
+
+        # Update the channel's post count
+        channel.post_count = (channel.post_count or 0) + 1
+        print(f"Updated channel post count: {channel.post_count}")
+
+        # Commit to the database
         db.session.add(new_post)
         db.session.commit()
+        print("Post committed to the database successfully")
+
         return jsonify({
             "message": "Post created successfully",
             "post_id": new_post.post_id
         }), 201
+
     except SQLAlchemyError as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        print("Database error:", str(e))
+        return jsonify({"error": "Internal Server Error"}), 500
+    except Exception as e:
+        print("Unexpected error:", str(e))
+        return jsonify({"error": "Unexpected error occurred"}), 500
 
 @bp.route('/posts/<int:post_id>', methods=['GET'])
 def get_single_post(post_id):
@@ -255,14 +282,14 @@ def get_single_post(post_id):
             "upvote_counts": post.upvote_counts,
             "downvote_counts": post.downvote_counts,
             "created_at": post.created_at.isoformat(),
-            "channel_name": post.channel.name,
-            "channel_id": post.channel.channel_id,  # Include channel_id
+            "channel_name": post.channel.name if post.channel else None,
+            "channel_id": post.channel.channel_id if post.channel else None,
             "user": {
-                "username": post.user.username,
-                "institute": post.user.university,
-                "user_id": post.user.user_id,
-            }
+                "username": post.user.username if post.user else None,
+                "institute": post.user.university.name if post.user and post.user.university else None,  # Make sure to extract the necessary attribute
+                "user_id": post.user.user_id if post.user else None,
         }
+}
 
         return jsonify(serialized_post), 200
     except Exception as e:
@@ -457,6 +484,10 @@ def delete_post(post_id):
         if post.user_id != user_id:
             return jsonify({"error": "Unauthorized to delete this post"}), 403
 
+        # Manually delete related votes
+        Vote.query.filter_by(post_id=post_id).delete()
+
+        # Now delete the post
         db.session.delete(post)
         db.session.commit()
 
@@ -535,7 +566,7 @@ def get_channel_posts(channel_id):
             "created_at": post.created_at.isoformat(),
             "user": {
                 "username": post.user.username,
-                "institute": post.user.university,
+                "institute": post.user.university.name if post.user.university else None,  # Extract name or other field
             }
         } for post in posts]), 200
     except Exception as e:
@@ -642,7 +673,7 @@ def get_university_posts(uni_id):
         posts = (
             db.session.query(Post)
             .join(User, Post.user_id == User.user_id)
-            .filter(User.university == uni_id)
+            .filter(User.university_id == uni_id)  # Filter directly by university_id field
             .options(joinedload(Post.user))
             .all()
         )
@@ -655,7 +686,7 @@ def get_university_posts(uni_id):
             "created_at": post.created_at.isoformat(),
             "user": {
                 "username": post.user.username,
-                "institute": post.user.university,
+                "institute": post.user.university.name if post.user.university else None,
             }
         } for post in posts]), 200
     except Exception as e:
@@ -664,20 +695,24 @@ def get_university_posts(uni_id):
     
 @bp.route('/universities/<int:uni_id>/reviews', methods=['GET'])
 def get_reviews(uni_id):
-    reviews = Rating.query.filter_by(uni_id=uni_id).all()
-    
-    if not reviews:
-        return jsonify({"message": "No reviews found for this university"}), 404
-    
-    review_list = []
-    for review in reviews:
-        review_data = {
-            "rating": review.career_growth,
-            "comments": review.comments,
-            "user_id": review.user_id,
-            "username": review.user.username,
-            "date": review.created_at.strftime('%Y-%m-%d %H:%M:%S')
-        }
-        review_list.append(review_data)
-    
-    return jsonify({"reviews": review_list}), 200
+    try:
+        # Fetch reviews related to the university
+        reviews = Rating.query.filter_by(uni_id=uni_id).all()
+        
+        if not reviews:
+            return jsonify({"message": "No reviews found for this university"}), 404
+        
+        review_list = []
+        for review in reviews:
+            review_data = {
+                "rating": review.career_growth,
+                "comments": review.comments,
+                "user_id": review.user_id,
+                "username": review.user.username,
+                "date": review.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            review_list.append(review_data)
+        
+        return jsonify({"reviews": review_list}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

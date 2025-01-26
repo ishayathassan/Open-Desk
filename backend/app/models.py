@@ -8,7 +8,7 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    university = db.Column(db.String(100), nullable=False)
+    university_id = db.Column(db.Integer, db.ForeignKey('university.uni_id'), nullable=False)  # Foreign key
     program = db.Column(db.String(100), nullable=False)
     year_of_study = db.Column(db.Integer, nullable=False)
     full_name = db.Column(db.String(100), nullable=False)
@@ -18,6 +18,9 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now(), nullable=False)
     is_anonymous = db.Column(db.Boolean, default=False, nullable=False)
     has_reviewed = db.Column(db.Boolean, default=False, nullable=False)
+
+    # Relationship to University
+    university = db.relationship('University', backref='users')
 
 
 # Channels Table
@@ -140,7 +143,11 @@ class Post(db.Model):
     # Define relationships
     user = db.relationship('User', backref='posts')
     channel = db.relationship('Channel', backref='posts')
-
+    university = db.relationship('University', backref='posts')
+    
+    # Foreign key to University
+    uni_id = db.Column(db.Integer, db.ForeignKey('university.uni_id'), nullable=False)
+    
 # Votes Table
 class Vote(db.Model):
     __tablename__ = 'votes'
