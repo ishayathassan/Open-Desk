@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 import { useParams } from "react-router-dom";
 import "./css/home.css"; // Import your custom CSS
 
@@ -356,7 +358,9 @@ const PostDetail = () => {
           <img src="/images/user.png" alt="User" />
           <div className="header-info">
             <div className="first-row">
-              <span className="post-category">{post.category}</span>
+              <Link to={`/channels/${post.channel_id}`}>
+                <span className="post-category">{post.channel_name}</span>
+              </Link>
               <span className="bullet">•</span>
               <span className="post-time">
                 {new Date(post.created_at).toLocaleDateString()}

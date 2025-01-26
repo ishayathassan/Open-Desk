@@ -48,10 +48,7 @@ const App = () => {
               path="/posts/:id"
               element={<ProtectedRoute element={<PostDetail />} />}
             />
-            <Route
-              path="/channel/:id"
-              element={<ProtectedRoute element={<SingleChannel />} />}
-            />
+            <Route path="/channels/:channelId" element={<SingleChannel />} />
           </Routes>
         </div>
       </div>

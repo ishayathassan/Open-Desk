@@ -173,7 +173,8 @@ def home():
                 "upvote_counts": post.upvote_counts,
                 "downvote_counts": post.downvote_counts,
                 "created_at": post.created_at.isoformat(),
-                "category": post.channel.name,  # Use channel's name as category
+                "channel_name": post.channel.name,  # Use channel's name as category
+                "channel_id": post.channel.channel_id,  # Include channel_id
                 "user": {
                     "username": post.user.username,
                     "institute": post.user.university,
@@ -253,7 +254,8 @@ def get_single_post(post_id):
             "upvote_counts": post.upvote_counts,
             "downvote_counts": post.downvote_counts,
             "created_at": post.created_at.isoformat(),
-            "category": post.channel.name,
+            "channel_name": post.channel.name,
+            "channel_id": post.channel.channel_id,  # Include channel_id
             "user": {
                 "username": post.user.username,
                 "institute": post.user.university,
@@ -497,3 +499,108 @@ def update_post(post_id):
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+    
+@bp.route('/channels/<int:channel_id>', methods=['GET'])
+def get_channel(channel_id):
+    try:
+        channel = Channel.query.get_or_404(channel_id)
+        return jsonify({
+            "channel_id": channel.channel_id,
+            "name": channel.name,
+            "logo_image": channel.logo_image,
+            "cover_image": channel.cover_image,
+            "follow_count": channel.follow_count,
+            "post_count": channel.post_count,
+            "bio": channel.bio,
+            "rules": channel.rules
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/channels/<int:channel_id>/posts', methods=['GET'])
+def get_channel_posts(channel_id):
+    try:
+        posts = (
+            Post.query.filter_by(channel_id=channel_id)
+            .options(joinedload(Post.user))
+            .all()
+        )
+
+        return jsonify([{
+            "id": post.post_id,
+            "content": post.content,
+            "upvote_counts": post.upvote_counts,
+            "downvote_counts": post.downvote_counts,
+            "created_at": post.created_at.isoformat(),
+            "user": {
+                "username": post.user.username,
+                "institute": post.user.university,
+            }
+        } for post in posts]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/channels/<int:channel_id>/follow', methods=['POST', 'DELETE'])
+def follow_channel(channel_id):
+    user_id = request.headers.get('X-User-ID')
+
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    channel = Channel.query.get(channel_id)
+    if not channel:
+        return jsonify({"error": "Channel not found"}), 404
+
+    if request.method == 'POST':  # Follow the channel
+        # Check if already followed
+        if FollowedChannel.query.filter_by(user_id=user_id, channel_id=channel_id).first():
+            return jsonify({"message": "Already following this channel"}), 400
+        
+        followed_channel = FollowedChannel(user_id=user_id, channel_id=channel_id)
+        db.session.add(followed_channel)
+        
+        # Ensure follow_count is an integer before incrementing
+        if channel.follow_count is None:
+            channel.follow_count = 0
+        channel.follow_count += 1
+        
+        db.session.commit()
+        return jsonify({"message": "Successfully followed the channel"}), 200
+
+    elif request.method == 'DELETE':  # Unfollow the channel
+        # Find the follow relationship
+        followed_channel = FollowedChannel.query.filter_by(user_id=user_id, channel_id=channel_id).first()
+        if not followed_channel:
+            return jsonify({"message": "You are not following this channel"}), 400
+        
+        db.session.delete(followed_channel)
+        
+        # Ensure follow_count is an integer before decrementing
+        if channel.follow_count is None:
+            channel.follow_count = 0
+        channel.follow_count -= 1
+        
+        db.session.commit()
+        return jsonify({"message": "Successfully unfollowed the channel"}), 200
+
+@bp.route('/channels/<int:channel_id>/follow-status', methods=['GET'])
+def follow_status(channel_id):
+    username = request.args.get('username')  # Extract username from query parameter
+    if not username:
+        return jsonify({"error": "Username is required"}), 400
+    
+    # Example logic to fetch user info and follow status
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    # Example response
+    return jsonify({
+        "channel_id": channel_id,
+        "username": username,
+        "follow_status": "Following"  # Replace with actual logic
+    })

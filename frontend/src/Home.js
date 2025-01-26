@@ -123,7 +123,9 @@ const Home = () => {
             <img src="/images/user.png" alt="User" />
             <div className="header-info">
               <div className="first-row">
-                <span className="post-category">{post.category}</span>
+                <Link to={`/channels/${post.channel_id}`}>
+                  <span className="post-category">{post.channel_name}</span>
+                </Link>
                 <span className="bullet">•</span>
                 <span className="post-time">
                   {new Date(post.created_at).toLocaleDateString()}
