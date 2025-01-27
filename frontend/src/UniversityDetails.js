@@ -182,10 +182,8 @@ const UniversityDetails = () => {
                     </span>
                   </div>
                   <div className="review-content">
-                    <strong>Pros</strong>
-                    <p>{review.pros}</p>
-                    <strong>Cons</strong>
-                    <p>{review.cons}</p>
+                    <strong>Comments</strong>
+                    <p>{review.comments}</p>
                   </div>
                   <div className="review-actions">
                     <button>Helpful ({review.helpfulCount})</button>
