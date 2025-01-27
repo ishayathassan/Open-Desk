@@ -55,6 +55,7 @@ const App = () => {
               path="/universities/:uniId"
               element={<UniversityDetails />}
             />
+
             <Route path="/channels" element={<AllChannels />} />
           </Routes>
         </div>
