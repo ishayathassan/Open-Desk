@@ -15,6 +15,7 @@ import CreatePost from "./CreatePost.js";
 import PostDetail from "./PostDetail.js"; // Create this new component
 import SingleChannel from "./SingleChannel.js";
 import UniversityDetails from "./UniversityDetails.js";
+import AllChannels from "./AllChannels.js";
 
 const isLoggedIn = () => {
   return !!localStorage.getItem("user_id");
@@ -54,6 +55,7 @@ const App = () => {
               path="/universities/:uniId"
               element={<UniversityDetails />}
             />
+            <Route path="/channels" element={<AllChannels />} />
           </Routes>
         </div>
       </div>

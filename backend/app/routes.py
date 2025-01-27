@@ -716,3 +716,32 @@ def get_reviews(uni_id):
         return jsonify({"reviews": review_list}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@bp.route('/channels', methods=['GET'])
+def get_all_channels():
+    try:
+        # Fetch all channels from the database
+        channels = Channel.query.all()
+
+        # Serialize the channel data
+        channels_data = [
+            {
+                "channel_id": channel.channel_id,
+                "name": channel.name,
+                "slug": channel.slug,
+                "logo_image": channel.logo_image,
+                "cover_image": channel.cover_image,
+                "bio": channel.bio,
+                "rules": channel.rules,
+                "follow_count": channel.follow_count,
+                "post_count": channel.post_count,
+                "type": channel.type,
+                "short_form": channel.short_form,
+                "is_private": channel.is_private,
+            }
+            for channel in channels
+        ]
+
+        return jsonify(channels_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

@@ -22,10 +22,13 @@ const LeftSidebar = () => {
             <span>My Campus</span>
           </Link>
         </li>
-        <li className="sidebar-links">
-          <img src="/images/school.png" alt="All Channels" />
-          <span>All Channels</span>
-        </li>
+        <Link to="/channels">
+          <li className="sidebar-links">
+            <img src="/images/school.png" alt="All Channels" />
+            <span>All Channels</span>
+          </li>
+        </Link>
+
         <li className="sidebar-links">
           <img src="/images/badge.png" alt="Featured" />
           <span>Featured</span>
