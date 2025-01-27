@@ -167,6 +167,7 @@ def home():
         posts = (
             db.session.query(Post)
             .options(joinedload(Post.user), joinedload(Post.channel))
+            .order_by(Post.created_at.desc())  # Order by created_at in descending order
             .all()
         )
 
@@ -190,6 +191,7 @@ def home():
         return jsonify(response), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 @bp.route('/create_post', methods=['POST'])
@@ -595,7 +597,6 @@ def follow_channel(channel_id):
         followed_channel = FollowedChannel(user_id=user_id, channel_id=channel_id)
         db.session.add(followed_channel)
         
-        # Ensure follow_count is an integer before incrementing
         if channel.follow_count is None:
             channel.follow_count = 0
         channel.follow_count += 1
@@ -604,17 +605,15 @@ def follow_channel(channel_id):
         return jsonify({"message": "Successfully followed the channel"}), 200
 
     elif request.method == 'DELETE':  # Unfollow the channel
-        # Find the follow relationship
         followed_channel = FollowedChannel.query.filter_by(user_id=user_id, channel_id=channel_id).first()
         if not followed_channel:
             return jsonify({"message": "You are not following this channel"}), 400
         
         db.session.delete(followed_channel)
         
-        # Ensure follow_count is an integer before decrementing
         if channel.follow_count is None:
             channel.follow_count = 0
-        channel.follow_count -= 1
+        channel.follow_count = max(0, channel.follow_count - 1)  # Prevent negative follow counts
         
         db.session.commit()
         return jsonify({"message": "Successfully unfollowed the channel"}), 200
@@ -624,17 +623,18 @@ def follow_status(channel_id):
     username = request.args.get('username')  # Extract username from query parameter
     if not username:
         return jsonify({"error": "Username is required"}), 400
-    
-    # Example logic to fetch user info and follow status
+
     user = User.query.filter_by(username=username).first()
     if not user:
         return jsonify({"error": "User not found"}), 404
-    
-    # Example response
+
+    # Check if the user is following the channel
+    is_following = FollowedChannel.query.filter_by(user_id=user.user_id, channel_id=channel_id).first() is not None
+
     return jsonify({
         "channel_id": channel_id,
         "username": username,
-        "follow_status": "Following"  # Replace with actual logic
+        "follow_status": "Following" if is_following else "Not Following"
     })
 
 @bp.route('/universities/<int:uni_id>', methods=['GET'])
@@ -709,7 +709,6 @@ def get_reviews(uni_id):
                 "comments": review.comments,
                 "user_id": review.user_id,
                 "username": review.user.username,
-                "date": review.created_at.strftime('%Y-%m-%d %H:%M:%S')
             }
             review_list.append(review_data)
         
@@ -720,8 +719,8 @@ def get_reviews(uni_id):
 @bp.route('/channels', methods=['GET'])
 def get_all_channels():
     try:
-        # Fetch all channels from the database
-        channels = Channel.query.all()
+        # Fetch all channels from the database, ordered by channel_id descending
+        channels = Channel.query.order_by(Channel.channel_id.desc()).all()
 
         # Serialize the channel data
         channels_data = [

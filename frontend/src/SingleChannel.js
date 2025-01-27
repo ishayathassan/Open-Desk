@@ -1,18 +1,21 @@
-import "./css/SingleChannel.css";
-import { Link, useNavigate } from "react-router-dom";
-
+import { Link, useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import "./css/SingleChannel.css";
 
 const SingleChannel = () => {
+  const { channelId } = useParams(); // Get channelId from the URL params
   const [isJoined, setIsJoined] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
   const [channel, setChannel] = useState(null);
   const [posts, setPosts] = useState([]);
   const [followCount, setFollowCount] = useState(0);
 
-  const channelId = 1; // Assume you have the channelId (this can come from routing params if needed)
-
   useEffect(() => {
+    if (!channelId) {
+      console.error("Channel ID is undefined");
+      return;
+    }
+
     const fetchChannelData = async () => {
       const username = localStorage.getItem("username"); // Get username from localStorage
 
@@ -34,7 +37,13 @@ const SingleChannel = () => {
           `http://127.0.0.1:5000/channels/${channelId}/follow-status?username=${username}`
         );
         const followData = await followResponse.json();
-        setIsJoined(followData.follow_status === "Following");
+
+        if (followResponse.ok && !followData.error) {
+          setIsJoined(followData.follow_status === "Following");
+        } else {
+          console.error("Error fetching follow status:", followData.error);
+          setIsJoined(false);
+        }
 
         const postsResponse = await fetch(
           `http://127.0.0.1:5000/channels/${channelId}/posts`
